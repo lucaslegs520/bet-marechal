@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BET MATEMATICA FAETEC</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: #282c34;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .history-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            padding: 20px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .history-title {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .history-counters {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .counter-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            border: 2px solid;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            min-width: 60px;
+            animation: slideInFromLeft 0.6s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .counter-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .counter-item:hover::before {
+            left: 100%;
+        }
+
+        .counter-item:hover {
+            transform: scale(1.1) translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .blueBorder {
+            background: rgba(255, 193, 7, 0.2);
+            border-color: #ffc107;
+            color: #ffc107;
+        }
+
+        .purpleBorder {
+            background: rgba(255, 165, 0, 0.2);
+            border-color: #ffa500;
+            color: #ffa500;
+        }
+
+        .burgundyBorder {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .balance-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .balance-label {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .balance-amount {
+            background: #1e2328;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            border: 1px solid #3c4043;
+        }
+
+        .game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .canvas-container {
+            width: 95%;
+            max-width: 900px;
+            height: 450px;
+            background: #1e2328;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #3c4043;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out 0.2s both;
+            transition: all 0.3s ease;
+        }
+
+
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            background: #1e2328;
+        }
+
+        .multiplier-display {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 4rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            z-index: 10;
+            animation: pulse 2s infinite;
+            letter-spacing: -0.02em;
+        }
+
+        .crash-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff4757, #e74c3c);
+            padding: 25px 50px;
+            border-radius: 8px;
+            text-align: center;
+            z-index: 20;
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+            display: none;
+        }
+
+        .crash-multiplier {
+            font-size: 42px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .crash-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.95;
+        }
+
+        .countdown-bar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            height: 60px;
+            background: #21252C;
+            border-radius: 8px;
+            z-index: 25;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .countdown-bar.show {
+            display: block;
+        }
+
+        .countdown-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #F03E57;
+            border-radius: 8px;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px rgba(240, 62, 87, 0.5);
+        }
+
+        .countdown-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        .countdown-text {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+            display: inline;
+        }
+
+        .countdown-timer {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            display: inline;
+            margin-left: 8px;
+        }
+
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: translateX(-50%) scale(1);
+                filter: brightness(1);
+            }
+            50% { 
+                transform: translateX(-50%) scale(1.1);
+                filter: brightness(1.2);
+            }
+        }
+
+        @keyframes explosion {
+            0% { 
+                transform: translateX(-50%) scale(1);
+                opacity: 1;
+            }
+            25% { 
+                transform: translateX(-50%) scale(1.5);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translateX(-50%) scale(2);
+                opacity: 0.6;
+            }
+            75% { 
+                transform: translateX(-50%) scale(2.5);
+                opacity: 0.3;
+            }
+            100% { 
+                transform: translateX(-50%) scale(3);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(255, 71, 87, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(255, 71, 87, 0.6), 0 0 30px rgba(255, 71, 87, 0.4);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutToRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+        }
+
+        .explosion-effect {
+            animation: explosion 1s ease-out;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .slide-in-right {
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 0.5s ease-out;
+        }
+
+        .glow-effect {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .float-effect {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .shimmer-effect {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        .bounce-effect {
+            animation: bounce 1s ease-in-out;
+        }
+
+        .slide-in-from-left {
+            animation: slideInFromLeft 0.4s ease-out;
+        }
+
+        .slide-out-to-right {
+            animation: slideOutToRight 0.3s ease-in;
+        }
+
+        .controls-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            width: 90%;
+            max-width: 600px;
+            animation: fadeInUp 1s ease-out 0.8s both;
+        }
+
+        .bet-input-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .bet-input {
+            width: 100%;
+            padding: 20px 60px 20px 60px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            background: #1e2328;
+            border: 2px solid #3c4043;
+            border-radius: 8px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+
+        .bet-input::-webkit-outer-spin-button,
+        .bet-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .bet-input:focus {
+            border-color: #ff4757;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+            transform: scale(1.02);
+            background: #252a32;
+        }
+
+        .bet-input:hover {
+            border-color: #5a5d65;
+            background: #252a32;
+        }
+
+        .bet-input::placeholder {
+            color: #666;
+            font-weight: 400;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ffc107;
+            font-size: 1.2rem;
+            font-weight: 700;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .bet-input-controls {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            z-index: 2;
+        }
+
+        .bet-input-btn {
+            width: 20px;
+            height: 20px;
+            background: #3c4043;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .bet-input-btn:hover {
+            background: #5a5d65;
+            transform: scale(1.1);
+        }
+
+        .bet-input-btn:active {
+            transform: scale(0.95);
+            background: #ff4757;
+        }
+
+        .bet-input-label {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            color: #888;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 10;
+            background: rgba(40, 44, 52, 0.9);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .bet-button {
+            padding: 20px 60px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #ff4757, #ff3742);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bet-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .bet-button:hover::before {
+            left: 100%;
+        }
+
+        .bet-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 71, 87, 0.6);
+        }
+
+        .bet-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .bet-button.cash-out {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.4);
+        }
+
+        .bet-button.cash-out:hover {
+            box-shadow: 0 15px 40px rgba(46, 204, 113, 0.6);
+        }
+
+
+        .quick-bets {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 5;
+            animation: slideInRight 0.8s ease-out 0.6s both;
+        }
+
+        .quick-bet {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            min-width: 80px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-bet:hover {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.3));
+            border-color: rgba(255, 71, 87, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 71, 87, 0.2);
+        }
+
+        .quick-bet:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .stats-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 20px;
+            z-index: 5;
+            animation: slideInLeft 0.8s ease-out 0.4s both;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px 15px;
+            background: rgba(30, 35, 40, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(60, 64, 67, 0.3);
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .educational-notice {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(30, 35, 40, 0.9);
+            color: #888;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-align: center;
+            border: 1px solid rgba(60, 64, 67, 0.3);
+            z-index: 1000;
+            max-width: 200px;
+            line-height: 1.2;
+        }
+
+        .educational-notice .project-name {
+            color: #ffc107;
+            font-weight: bold;
+            font-size: 0.65rem;
+        }
+
+        .educational-notice .warning {
+            color: #ff4757;
+            font-size: 0.6rem;
+            margin-top: 2px;
+        }
+
+        .warning-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .warning-modal.hidden {
+            display: none;
+        }
+
+        .warning-content {
+            background: linear-gradient(135deg, rgba(30, 35, 40, 0.98), rgba(37, 42, 50, 0.98));
+            backdrop-filter: blur(10px);
+            padding: 60px 80px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #ff4757;
+            box-shadow: 0 20px 60px rgba(255, 71, 87, 0.3);
+            max-width: 600px;
+            margin: 20px;
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .warning-icon {
+            font-size: 6rem;
+            margin: 0 auto 40px auto;
+            color: #ffc107;
+            text-shadow: 0 0 30px rgba(255, 193, 7, 0.8);
+            filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.6));
+            display: block;
+            width: fit-content;
+            animation: smoothGlow 4s ease-in-out infinite;
+        }
+
+        .warning-title {
+            color: #ffc107;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+        }
+
+        .warning-subtitle {
+            color: #ff4757;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            text-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .warning-description {
+            color: #ccc;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 50px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .confirm-button {
+            background: linear-gradient(135deg, #ff4757, #e74c3c);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirm-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .confirm-button:hover::before {
+            left: 100%;
+        }
+
+        .confirm-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 71, 87, 0.6);
+        }
+
+        .confirm-button:active {
+            transform: translateY(-1px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes smoothGlow {
+            0%, 100% {
+                text-shadow: 0 0 30px rgba(255, 193, 7, 0.8);
+                filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.6));
+            }
+            50% {
+                text-shadow: 0 0 50px rgba(255, 193, 7, 0.9);
+                filter: drop-shadow(0 0 30px rgba(255, 193, 7, 0.8));
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+                overflow-x: hidden;
+            }
+            
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 15px;
+                gap: 10px;
+            }
+            
+            .balance-display {
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .balance-label {
+                font-size: 0.8rem;
+            }
+            
+            .balance-amount {
+                font-size: 1rem;
+                padding: 6px 12px;
+            }
+            
+            .game-container {
+                padding: 10px;
+                gap: 15px;
+            }
+            
+            .stats-overlay {
+                position: relative;
+                top: auto;
+                left: auto;
+                justify-content: center;
+                margin-bottom: 15px;
+                flex-wrap: wrap;
+                gap: 8px;
+                order: 1;
+            }
+            
+            .stat-item {
+                padding: 8px 12px;
+                min-width: 60px;
+                flex: 1;
+                max-width: 80px;
+            }
+            
+            .stat-value {
+                font-size: 1rem;
+            }
+            
+            .stat-label {
+                font-size: 0.6rem;
+            }
+            
+            .stat-icon {
+                font-size: 0.9rem;
+            }
+
+            .quick-bets {
+                position: relative;
+                top: auto;
+                right: auto;
+                justify-content: center;
+                margin-bottom: 15px;
+                order: 2;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .quick-bet {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+                min-width: 60px;
+                flex: 1;
+                max-width: 80px;
+            }
+            
+            .canvas-container {
+                height: 200px;
+                margin-bottom: 15px;
+                order: 3;
+            }
+            
+            .multiplier-display {
+                font-size: 2rem;
+                top: 15px;
+            }
+            
+            .history-section {
+                margin: 15px 0;
+                padding: 10px;
+                order: 4;
+            }
+            
+            .history-title {
+                font-size: 0.8rem;
+                margin-bottom: 8px;
+            }
+            
+            .history-counters {
+                gap: 6px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding: 5px 0;
+                justify-content: flex-start;
+            }
+            
+            .counter-item {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+                min-width: 50px;
+                flex-shrink: 0;
+            }
+            
+            .controls-container {
+                flex-direction: column;
+                width: 100%;
+                gap: 15px;
+                order: 5;
+            }
+            
+            .bet-input-container {
+                width: 100%;
+            }
+            
+            .bet-input {
+                font-size: 1.2rem;
+                padding: 15px 50px 15px 50px;
+            }
+            
+            .currency-symbol {
+                left: 20px;
+                font-size: 1rem;
+            }
+            
+            .bet-input-controls {
+                right: 12px;
+            }
+            
+            .bet-input-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
+            
+            .bet-input-label {
+                top: -25px;
+                font-size: 0.7rem;
+            }
+            
+            .bet-button {
+                width: 100%;
+                padding: 15px;
+                font-size: 1.2rem;
+            }
+            
+            .countdown-bar {
+                width: 90%;
+                height: 40px;
+            }
+            
+            .countdown-content {
+                font-size: 16px;
+            }
+            
+            .countdown-text {
+                font-size: 16px;
+            }
+            
+            .countdown-timer {
+                font-size: 16px;
+            }
+
+            .educational-notice {
+                bottom: 5px;
+                right: 5px;
+                font-size: 0.6rem;
+                max-width: 150px;
+                padding: 6px 8px;
+            }
+            
+            .warning-content {
+                padding: 30px 20px;
+                margin: 10px;
+                max-width: 95%;
+                border-radius: 15px;
+            }
+            
+            .warning-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+            
+            .warning-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 25px;
+            }
+            
+            .warning-description {
+                font-size: 0.9rem;
+                margin-bottom: 25px;
+                line-height: 1.4;
+            }
+            
+            .confirm-button {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+            
+            .warning-icon {
+                font-size: 3.5rem;
+                margin: 0 auto 25px auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .canvas-container {
+                height: 180px;
+            }
+            
+            .multiplier-display {
+                font-size: 1.8rem;
+                top: 10px;
+            }
+            
+            .stats-overlay {
+                gap: 6px;
+            }
+            
+            .stat-item {
+                padding: 6px 8px;
+                min-width: 50px;
+                max-width: 70px;
+            }
+            
+            .stat-value {
+                font-size: 0.9rem;
+            }
+            
+            .stat-label {
+                font-size: 0.5rem;
+            }
+            
+            .quick-bet {
+                padding: 8px 12px;
+                font-size: 0.7rem;
+                min-width: 50px;
+                max-width: 70px;
+            }
+            
+            .bet-input {
+                font-size: 1.1rem;
+                padding: 12px 45px 12px 45px;
+            }
+            
+            .bet-button {
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+            
+            .history-counters {
+                gap: 4px;
+            }
+            
+            .counter-item {
+                padding: 5px 8px;
+                font-size: 0.7rem;
+                min-width: 45px;
+            }
+            
+            .warning-content {
+                padding: 25px 15px;
+            }
+            
+            .warning-title {
+                font-size: 1.3rem;
+            }
+            
+            .warning-subtitle {
+                font-size: 1rem;
+            }
+            
+            .warning-description {
+                font-size: 0.8rem;
+            }
+            
+            .confirm-button {
+                padding: 10px 25px;
+                font-size: 0.9rem;
+            }
+            
+            .warning-icon {
+                font-size: 3rem;
+            }
+            
+            .countdown-bar {
+                width: 85%;
+                height: 35px;
+            }
+            
+            .countdown-content {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="balance-display">
+            <span class="balance-label">Saldo:</span>
+            <div class="balance-amount" id="balance-amount">R$ 200,00</div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="stats-overlay">
+            <div class="stat-item">
+                <div class="stat-value" id="total-bets">0</div>
+                <div class="stat-label">Apostas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="total-wins">0</div>
+                <div class="stat-label">Vitórias</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="win-rate">0%</div>
+                <div class="stat-label">Taxa de Lucro</div>
+            </div>
+        </div>
+
+        <div class="quick-bets">
+            <button class="quick-bet" data-amount="50">R$ 50</button>
+            <button class="quick-bet" data-amount="100">R$ 100</button>
+            <button class="quick-bet" data-amount="250">R$ 250</button>
+            <button class="quick-bet" data-amount="500">R$ 500</button>
+        </div>
+
+        <div class="canvas-container">
+            <div class="multiplier-display" id="multiplier-display">1.00x</div>
+            <div class="crash-display" id="crash-display">
+                <div class="crash-multiplier" id="crash-multiplier">6,35X</div>
+                <div class="crash-text">CRASH</div>
+            </div>
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="history-section">
+            <div class="history-title">HISTÓRICO DE APOSTAS</div>
+            <div class="history-counters" id="last-counters"></div>
+        </div>
+
+
+        <div class="controls-container">
+            <div class="bet-input-container">
+                <label class="bet-input-label">Valor da Aposta</label>
+                <span class="currency-symbol">R$</span>
+                <input type="number" class="bet-input" id="bet-input" step="1" value="100" placeholder="Digite o valor">
+                <div class="bet-input-controls">
+                    <button class="bet-input-btn" id="bet-increase">+</button>
+                    <button class="bet-input-btn" id="bet-decrease">−</button>
+                </div>
+            </div>
+            <button class="bet-button" id="bet-button">Apostar</button>
+        </div>
+    </div>
+
+    <div class="countdown-bar" id="countdown-bar">
+        <div class="countdown-progress" id="countdown-progress"></div>
+        <div class="countdown-content">
+            <span class="countdown-text">Começando em</span>
+            <span class="countdown-timer" id="countdown-timer">8.5s</span>
+        </div>
+    </div>
+
+    <!-- Modal de Aviso -->
+    <div class="warning-modal" id="warning-modal">
+        <div class="warning-content">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-title">Projeto Matemática FAETEC Visconde de Mauá</div>
+            <div class="warning-subtitle">Jogo Educativo</div>
+            <div class="warning-description">
+                Este é um jogo desenvolvido exclusivamente para fins educativos e de demonstração matemática. 
+                Não envolve dinheiro real e é destinado apenas ao aprendizado sobre probabilidades e estatísticas.
+            </div>
+            <button class="confirm-button" id="confirm-button">Entendi e Concordo</button>
+        </div>
+    </div>
+
+    <div class="educational-notice">
+        <div class="project-name">Projeto Matemática FAETEC Visconde de Mauá</div>
+        <div class="warning">⚠️ Jogo feito apenas para fins educativos</div>
+    </div>
+
+    <script>
+        class AviatorGame {
+            constructor() {
+                this.initializeElements();
+                this.initializeGameState();
+                this.initializeCanvas();
+                this.initializeEventListeners();
+                this.loadGameData();
+                this.updateCounterDisplay();
+                this.startGame();
+            }
+
+            initializeElements() {
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.multiplierDisplay = document.getElementById('multiplier-display');
+                this.crashDisplay = document.getElementById('crash-display');
+                this.crashMultiplierDisplay = document.getElementById('crash-multiplier');
+                this.countdownBar = document.getElementById('countdown-bar');
+                this.countdownTimer = document.getElementById('countdown-timer');
+                this.balanceElement = document.getElementById('balance-amount');
+                this.betButton = document.getElementById('bet-button');
+                this.betInput = document.getElementById('bet-input');
+                this.lastCounters = document.getElementById('last-counters');
+                this.totalBetsElement = document.getElementById('total-bets');
+                this.totalWinsElement = document.getElementById('total-wins');
+                this.winRateElement = document.getElementById('win-rate');
+                
+            }
+
+            initializeGameState() {
+                this.balance = 200;
+                this.currentMultiplier = 1.0;
+                this.isFlying = false;
+                this.hasPlacedBet = false;
+                this.hasCashedOut = false;
+                this.currentBetAmount = 0;
+                this.animationId = null;
+                this.countdownInterval = null;
+                this.isExploding = false;
+                
+                this.planeX = 0;
+                this.planeY = 0;
+                this.speedX = 3.5;
+                this.dotPath = [];
+                
+                this.cameraX = 0;
+                this.cameraY = 0;
+                this.cameraFollowSpeed = 0.08;
+                
+                this.stats = {
+                    totalBets: 0,
+                    totalWins: 0,
+                    winRate: 0
+                };
+                
+                this.counterHistory = [1.01, 18.45, 2.02, 5.21, 1.22, 1.25];
+            }
+
+            initializeCanvas() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+
+            resizeCanvas() {
+                const container = this.canvas.parentElement;
+                this.canvas.width = container.clientWidth;
+                this.canvas.height = container.clientHeight;
+                
+                this.planeX = 50;
+                this.planeY = this.canvas.height - 50;
+                
+                this.cameraX = 0;
+                this.cameraY = 0;
+            }
+
+            initializeEventListeners() {
+                this.betButton.addEventListener('click', () => this.handleBetButton());
+                
+                document.querySelectorAll('.quick-bet').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const amount = e.target.dataset.amount;
+                        this.betInput.value = amount;
+                    });
+                });
+                
+                // Botões de incremento/decremento
+                document.getElementById('bet-increase').addEventListener('click', () => {
+                    let value = parseInt(this.betInput.value) || 0;
+                    this.betInput.value = (value + 10).toString();
+                });
+                
+                document.getElementById('bet-decrease').addEventListener('click', () => {
+                    let value = parseInt(this.betInput.value) || 0;
+                    if (value > 10) {
+                        this.betInput.value = (value - 10).toString();
+                    }
+                });
+                
+                this.betInput.addEventListener('keydown', (e) => {
+                    const invalidChars = ['-', '+', 'e', 'E', '.', ','];
+                    if (invalidChars.includes(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+
+                this.betInput.addEventListener('input', (e) => {
+                    let value = parseInt(e.target.value);
+                    if (!isNaN(value)) {
+                        e.target.value = value.toString();
+                    }
+                });
+
+                // Efeito visual no input
+                this.betInput.addEventListener('focus', () => {
+                    this.betInput.style.transform = 'scale(1.02)';
+                });
+
+                this.betInput.addEventListener('blur', () => {
+                    this.betInput.style.transform = 'scale(1)';
+                });
+            }
+
+            calculateCrashChance() {
+                // Cálculo de crash mais agressivo para fins educativos
+                if (this.currentMultiplier < 1.1) {
+                    return 0.0001; // Muito baixa chance antes de 1.1x
+                }
+                
+                // Chance de crash progressiva mais agressiva
+                const multiplierFactor = this.currentMultiplier - 1;
+                
+                // Fórmula mais agressiva para crash mais frequente
+                let crashChance;
+                if (this.currentMultiplier < 2.0) {
+                    // Entre 1.1x e 2.0x - chance moderada
+                    crashChance = 0.001 + (multiplierFactor * 0.002);
+                } else if (this.currentMultiplier < 5.0) {
+                    // Entre 2.0x e 5.0x - chance alta
+                    crashChance = 0.005 + (multiplierFactor * 0.008);
+                } else if (this.currentMultiplier < 10.0) {
+                    // Entre 5.0x e 10.0x - chance muito alta
+                    crashChance = 0.02 + (multiplierFactor * 0.01);
+                } else {
+                    // Acima de 10.0x - chance extremamente alta
+                    crashChance = 0.05 + (multiplierFactor * 0.02);
+                }
+                
+                return Math.min(crashChance, 0.25); // Máximo 25% de chance por frame
+            }
+
+
+            updateDisplay() {
+                this.multiplierDisplay.textContent = this.currentMultiplier.toFixed(2) + 'x';
+                this.balanceElement.textContent = 'R$ ' + this.balance.toLocaleString('pt-BR', { 
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2 
+                });
+                
+                // Atualizar cor do multiplicador para combinar com a cor da trilha (Branco -> Laranja -> Vermelho)
+                const colors = this.getSmoothColor(this.currentMultiplier);
+                this.multiplierDisplay.style.color = colors.solid;
+            }
+
+            updateStats() {
+                this.totalBetsElement.textContent = this.stats.totalBets;
+                this.totalWinsElement.textContent = this.stats.totalWins;
+                this.stats.winRate = this.stats.totalBets > 0 ? (this.stats.totalWins / this.stats.totalBets * 100) : 0;
+                this.winRateElement.textContent = this.stats.winRate.toFixed(1) + '%';
+            }
+
+            updateCounterDisplay() {
+                this.lastCounters.innerHTML = this.counterHistory.slice(0, 6).map((counter, index) => {
+                    let className = 'blueBorder';
+                    if (counter >= 2 && counter < 10) className = 'purpleBorder';
+                    else if (counter >= 10) className = 'burgundyBorder';
+                    
+                    // Apenas o primeiro item (mais recente) recebe animação de entrada
+                    const animationClass = index === 0 ? 'slide-in-from-left' : '';
+                    return `<div class="counter-item ${className} ${animationClass}">${counter.toFixed(2)}x</div>`;
+                }).join('');
+            }
+
+            updateCounterDisplayWithAnimation() {
+                // Primeiro, animar a saída do último item (se existir)
+                const lastItem = this.lastCounters.querySelector('.counter-item:last-child');
+                if (lastItem) {
+                    lastItem.classList.add('slide-out-to-right');
+                    
+                    // Após a animação de saída, remover o último item e adicionar o novo
+                    setTimeout(() => {
+                        // Remover o último item
+                        lastItem.remove();
+                        
+                        // Adicionar o novo item no início
+                        const newMultiplier = this.counterHistory[0];
+                        let className = 'blueBorder';
+                        if (newMultiplier >= 2 && newMultiplier < 10) className = 'purpleBorder';
+                        else if (newMultiplier >= 10) className = 'burgundyBorder';
+                        
+                        const newItem = document.createElement('div');
+                        newItem.className = `counter-item ${className} slide-in-from-left`;
+                        newItem.textContent = `${newMultiplier.toFixed(2)}x`;
+                        
+                        // Inserir no início do container
+                        this.lastCounters.insertBefore(newItem, this.lastCounters.firstChild);
+                    }, 300); // Duração da animação de saída
+                } else {
+                    // Se não há itens, adicionar o primeiro item
+                    const newMultiplier = this.counterHistory[0];
+                    let className = 'blueBorder';
+                    if (newMultiplier >= 2 && newMultiplier < 10) className = 'purpleBorder';
+                    else if (newMultiplier >= 10) className = 'burgundyBorder';
+                    
+                    const newItem = document.createElement('div');
+                    newItem.className = `counter-item ${className} slide-in-from-left`;
+                    newItem.textContent = `${newMultiplier.toFixed(2)}x`;
+                    
+                    this.lastCounters.appendChild(newItem);
+                }
+            }
+
+            handleBetButton() {
+                if (this.hasPlacedBet && this.isFlying) {
+                    this.cashOut();
+                } else if (!this.isFlying && !this.isExploding) {
+                    this.placeBet();
+                }
+            }
+
+            placeBet() {
+                const betAmount = parseInt(this.betInput.value);
+                
+                if (!betAmount || betAmount <= 0 || betAmount > this.balance || this.isFlying) {
+                    // Simply do nothing - don't place bet for invalid amounts
+                    return;
+                }
+                
+                this.balance -= betAmount;
+                this.currentBetAmount = betAmount;
+                this.hasPlacedBet = true;
+                this.hasCashedOut = false;
+                this.stats.totalBets++;
+                
+                this.betButton.textContent = 'Retirar';
+                this.betButton.classList.add('cash-out');
+                
+                this.updateDisplay();
+                this.updateStats();
+                this.saveGameData();
+            }
+
+            cashOut() {
+                if (!this.hasPlacedBet || this.hasCashedOut) return;
+                
+                const winAmount = this.currentBetAmount * this.currentMultiplier;
+                this.balance += winAmount;
+                this.hasCashedOut = true;
+                this.stats.totalWins++;
+                
+                this.betButton.textContent = 'Apostar';
+                this.betButton.classList.remove('cash-out');
+                
+                this.updateDisplay();
+                this.updateStats();
+                this.saveGameData();
+            }
+
+
+            // Função para interpolar entre duas cores
+            interpolateColor(color1, color2, factor) {
+                const result = color1.slice();
+                for (let i = 0; i < 3; i++) {
+                    result[i] = Math.round(result[i] + factor * (color2[i] - result[i]));
+                }
+                return result;
+            }
+
+            // Obter transição suave de cor com base no multiplicador
+            getSmoothColor(multiplier) {
+                // Definir cores
+                const white = [255, 255, 255];  // #ffffff
+                const orange = [255, 165, 0];   // #ffa500  
+                const red = [255, 71, 87];      // #ff4757
+
+                let color;
+
+                if (multiplier < 2) {
+                    // Transição de branco para laranja
+                    const factor = Math.max(0, Math.min(1, (multiplier - 1) / 1));
+                    color = this.interpolateColor(white, orange, factor);
+                } else if (multiplier < 5) {
+                    // Transição de laranja para vermelho
+                    const factor = Math.max(0, Math.min(1, (multiplier - 2) / 3));
+                    color = this.interpolateColor(orange, red, factor);
+                } else {
+                    // Permanecer vermelho para 5x+
+                    color = red;
+                }
+
+                return {
+                    solid: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+                    transparent: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`
+                };
+            }
+
+
+            updateCamera() {
+                if (this.isFlying && !this.isExploding) {
+                    // Seguir câmera - centralizar no avião
+                    const targetCameraX = this.planeX - this.canvas.width / 2;
+                    const targetCameraY = this.planeY - this.canvas.height / 2;
+                    
+                    // Interpolar suavemente a posição da câmera
+                    this.cameraX += (targetCameraX - this.cameraX) * this.cameraFollowSpeed;
+                    this.cameraY += (targetCameraY - this.cameraY) * this.cameraFollowSpeed;
+                }
+            }
+
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Desenhar fundo azul-acinzentado
+                this.ctx.fillStyle = '#1e2328';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                if (!this.isFlying && !this.isExploding) return;
+                
+                // Salvar a matriz de transformação atual
+                this.ctx.save();
+                
+                // Aplicar transformação da câmera (sem escala)
+                this.ctx.translate(-this.cameraX, -this.cameraY);
+                
+                if (!this.isExploding) {
+                    // Update plane position - Blaze-style trajectory
+                    this.planeX += this.speedX;
+                    
+                    // Blaze-inspired trajectory: starts very flat, then exponential curve
+                    const timeProgress = this.planeX / 200; // Time-based progress
+                    const multiplierProgress = Math.log(this.currentMultiplier) / Math.log(10); // Logarithmic multiplier progress
+                    
+                    // Very flat start with exponential acceleration (like Blaze)
+                    const flatStart = Math.pow(this.currentMultiplier - 1, 0.3) * 5; // Very gentle initial rise
+                    const exponentialRise = Math.pow(this.currentMultiplier - 1, 2.8) * 35; // Strong exponential component
+                    const timeBasedCurve = Math.pow(timeProgress, 1.5) * 15; // Time-based curvature
+                    
+                    this.planeY = this.canvas.height - 80 - flatStart - exponentialRise - timeBasedCurve;
+                    
+                    // Add to path
+                    this.dotPath.push({ x: this.planeX, y: this.planeY });
+                    
+                    // Keep path length reasonable for performance
+                    if (this.dotPath.length > 120) {
+                        this.dotPath.shift();
+                    }
+                }
+                
+                // Draw trail with smooth color transitions
+                if (this.dotPath.length > 1) {
+                    this.ctx.lineWidth = 4;
+                    this.ctx.lineCap = 'round';
+                    this.ctx.lineJoin = 'round';
+                    
+                    // Draw the main line with smooth gradient effect
+                    for (let i = 1; i < this.dotPath.length; i++) {
+                        const progress = i / this.dotPath.length;
+                        const intensity = Math.min(progress * 1.5, 1);
+                        
+                        // Get smooth color for current multiplier
+                        const colors = this.getSmoothColor(this.currentMultiplier);
+                        
+                        // Apply intensity to the solid color for gradient effect
+                        const rgbMatch = colors.solid.match(/rgb\((\d+), (\d+), (\d+)\)/);
+                        if (rgbMatch) {
+                            const [, r, g, b] = rgbMatch;
+                            this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${intensity})`;
+                        } else {
+                            this.ctx.strokeStyle = colors.solid;
+                        }
+                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.dotPath[i - 1].x, this.dotPath[i - 1].y);
+                        this.ctx.lineTo(this.dotPath[i].x, this.dotPath[i].y);
+                        this.ctx.stroke();
+                    }
+                }
+                
+                // Draw point with smooth color transitions
+                if (this.isExploding) {
+                    // Get smooth color for explosion
+                    const colors = this.getSmoothColor(this.currentMultiplier);
+                    
+                    // Convert solid color to rgba with 0.5 opacity for explosion effect
+                    const rgbMatch = colors.solid.match(/rgb\((\d+), (\d+), (\d+)\)/);
+                    let explosionColorRgba = 'rgba(255, 71, 87, 0.5)';
+                    if (rgbMatch) {
+                        const [, r, g, b] = rgbMatch;
+                        explosionColorRgba = `rgba(${r}, ${g}, ${b}, 0.5)`;
+                    }
+                    
+                    // Draw explosion as larger circle
+                    this.ctx.fillStyle = colors.solid;
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.planeX, this.planeY, 15, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                    
+                    // Add pulsing effect for explosion
+                    this.ctx.fillStyle = explosionColorRgba;
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.planeX, this.planeY, 25, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                } else if (this.isFlying) {
+                    // Get smooth colors for the point
+                    const colors = this.getSmoothColor(this.currentMultiplier);
+                    
+                    // Draw main point with smooth color
+                    this.ctx.fillStyle = colors.solid;
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.planeX, this.planeY, 8, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                    
+                    // Add glow effect with matching transparent color
+                    this.ctx.fillStyle = colors.transparent;
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.planeX, this.planeY, 12, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                }
+                
+                // Restore the transformation matrix
+                this.ctx.restore();
+            }
+
+            gameLoop() {
+                if (!this.isFlying && !this.isExploding) return;
+                
+                if (!this.isExploding) {
+                    // Update multiplier with Blaze-style acceleration
+                    const baseIncrement = 0.004; // Slightly faster base increment
+                    const acceleration = Math.pow(this.currentMultiplier - 1, 0.8) * 0.002; // Progressive acceleration
+                    this.currentMultiplier += baseIncrement + acceleration;
+                    
+                    // Blaze-style crash probability - very low at start, exponential increase
+                    const crashChance = this.calculateCrashChance();
+                    if (Math.random() < crashChance) {
+                        this.triggerCrash();
+                        return;
+                    }
+                    
+                    this.updateDisplay();
+                }
+                
+                // Update camera to follow the plane
+                this.updateCamera();
+                
+                this.draw();
+                this.animationId = requestAnimationFrame(() => this.gameLoop());
+            }
+
+            triggerCrash() {
+                this.isFlying = false;
+                this.isExploding = true;
+                
+                // Hide multiplier display and show crash display
+                this.multiplierDisplay.style.display = 'none';
+                this.crashDisplay.style.display = 'block';
+                this.crashMultiplierDisplay.textContent = this.currentMultiplier.toFixed(2).replace('.', ',') + 'X';
+                
+                // Clear the canvas and remove the trail line immediately
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillStyle = '#1e2328';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Clear the dot path to remove the trail
+                this.dotPath = [];
+                
+                // Reset bet button to "Apostar" state when crashing
+                this.betButton.textContent = 'Apostar';
+                this.betButton.classList.remove('cash-out');
+                
+                
+                // Add to history
+                this.counterHistory.unshift(parseFloat(this.currentMultiplier.toFixed(2)));
+                this.counterHistory = this.counterHistory.slice(0, 6);
+                
+                this.updateCounterDisplayWithAnimation();
+                this.saveGameData();
+                
+                // Show crash display for 2 seconds then hide and start countdown
+                setTimeout(() => {
+                    this.isExploding = false;
+                    this.crashDisplay.style.display = 'none';
+                    // Keep multiplier display hidden after crash
+                    this.multiplierDisplay.style.display = 'none';
+                    
+                    // Clear the canvas completely again
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.fillStyle = '#1e2328';
+                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                    
+                    // Start countdown with bar
+                    this.startCountdownWithBar();
+                }, 2000);
+            }
+
+            startCountdownWithBar() {
+                this.isCountingDown = true;
+                let countdownTime = 3.0;
+                const totalTime = 3.0;
+                this.countdownBar.classList.add('show');
+                this.countdownTimer.textContent = countdownTime.toFixed(1) + 's';
+                
+                // Inicializar barra de progresso
+                const progressBar = document.getElementById('countdown-progress');
+                progressBar.style.width = '100%';
+                
+                const countdownInterval = setInterval(() => {
+                    countdownTime -= 0.1;
+                    this.countdownTimer.textContent = countdownTime.toFixed(1) + 's';
+                    
+                    // Atualizar largura da barra de progresso
+                    const progressPercentage = (countdownTime / totalTime) * 100;
+                    progressBar.style.width = progressPercentage + '%';
+                    
+                    if (countdownTime <= 0) {
+                        clearInterval(countdownInterval);
+                        this.countdownBar.classList.remove('show');
+                        this.isCountingDown = false;
+                        this.startNewRound();
+                    }
+                }, 100);
+            }
+
+            startNewRound() {
+                this.currentMultiplier = 1.0;
+                this.planeX = 50;
+                this.planeY = this.canvas.height - 50;
+                this.dotPath = [];
+                
+                // Show multiplier display again for new round
+                this.multiplierDisplay.style.display = 'block';
+                
+                // Only reset bet state if there was no active bet
+                if (!this.hasPlacedBet || this.hasCashedOut) {
+                    this.hasPlacedBet = false;
+                    this.hasCashedOut = false;
+                    this.currentBetAmount = 0;
+                    this.betButton.textContent = 'Apostar';
+                    this.betButton.classList.remove('cash-out');
+                } else {
+                    // Keep the bet active and show retirar button
+                    this.betButton.textContent = 'Retirar';
+                    this.betButton.classList.add('cash-out');
+                }
+                
+                // Reset camera position for new round
+                this.cameraX = 0;
+                this.cameraY = 0;
+                
+                
+                // Clear canvas
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillStyle = '#1e2328';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Start flying immediately (countdown was handled by Blaze-style bar)
+                this.startFlying();
+            }
+
+            startFlying() {
+                this.isFlying = true;
+                this.gameLoop();
+            }
+
+            startGame() {
+                this.startCountdownWithBar();
+            }
+
+            saveGameData() {
+                const gameData = {
+                    balance: this.balance,
+                    stats: this.stats,
+                    counterHistory: this.counterHistory
+                };
+                this.savedData = gameData;
+            }
+
+            loadGameData() {
+                if (this.savedData) {
+                    this.balance = this.savedData.balance || 3000;
+                    this.stats = this.savedData.stats || { totalBets: 0, totalWins: 0, winRate: 0 };
+                    this.counterHistory = this.savedData.counterHistory || this.counterHistory;
+                }
+                this.updateDisplay();
+                this.updateStats();
+            }
+        }
+
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show warning modal every time
+            const warningModal = document.getElementById('warning-modal');
+            const confirmButton = document.getElementById('confirm-button');
+            
+            // Always show the modal
+            warningModal.classList.remove('hidden');
+            
+            // Handle confirm button click
+            confirmButton.addEventListener('click', () => {
+                warningModal.classList.add('hidden');
+                // Initialize game after modal is hidden
+                new AviatorGame();
+            });
+        });
+    </script>
+</body>
+</html>
+</html>
