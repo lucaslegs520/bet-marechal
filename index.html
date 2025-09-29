@@ -903,33 +903,6 @@
             letter-spacing: 1px;
         }
 
-        .educational-notice {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(30, 35, 40, 0.9);
-            color: #888;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            text-align: center;
-            border: 1px solid rgba(60, 64, 67, 0.3);
-            z-index: 1000;
-            max-width: 200px;
-            line-height: 1.2;
-        }
-
-        .educational-notice .project-name {
-            color: #ffc107;
-            font-weight: bold;
-            font-size: 0.65rem;
-        }
-
-        .educational-notice .warning {
-            color: #ff4757;
-            font-size: 0.6rem;
-            margin-top: 2px;
-        }
 
         .warning-modal {
             position: fixed;
@@ -1349,14 +1322,6 @@
                 font-size: 14px;
             }
 
-            .educational-notice {
-                bottom: 4px;
-                right: 4px;
-                font-size: 0.55rem;
-                max-width: 140px;
-                padding: 5px 6px;
-                border-radius: 3px;
-            }
             
             .warning-content {
                 padding: 25px 15px;
@@ -1572,13 +1537,6 @@
                 font-size: 16px;
             }
 
-            .educational-notice {
-                bottom: 5px;
-                right: 5px;
-                font-size: 0.6rem;
-                max-width: 150px;
-                padding: 6px 8px;
-            }
             
             .warning-content {
                 padding: 30px 20px;
@@ -1787,10 +1745,6 @@
         </div>
     </div>
 
-    <div class="educational-notice">
-        <div class="project-name">Projeto Matemática FAETEC Visconde de Mauá</div>
-        <div class="warning">⚠️ Jogo feito apenas para fins educativos</div>
-    </div>
 
     <script>
         class AviatorGame {
@@ -1841,6 +1795,10 @@
                 this.cameraX = 0;
                 this.cameraY = 0;
                 this.cameraFollowSpeed = 0.08;
+                
+                // Variáveis para controle de tempo
+                this.gameStartTime = 0;
+                this.gameDuration = 0;
                 
                 this.stats = {
                     totalBets: 0,
@@ -1916,31 +1874,37 @@
             }
 
             calculateCrashChance() {
-                // Cálculo de crash mais agressivo para fins educativos
-                if (this.currentMultiplier < 1.1) {
-                    return 0.0001; // Muito baixa chance antes de 1.1x
+                // Chance de crash baseada no tempo com mais aleatoriedade
+                if (this.gameDuration < 3) {
+                    return 0.0002; // Chance muito baixa nos primeiros 3 segundos
                 }
                 
-                // Chance de crash progressiva mais agressiva
-                const multiplierFactor = this.currentMultiplier - 1;
+                // Adicionar aleatoriedade à chance base
+                const randomFactor = (Math.random() - 0.5) * 0.001; // Variação aleatória de ±0.05%
                 
-                // Fórmula mais agressiva para crash mais frequente
-                let crashChance;
-                if (this.currentMultiplier < 2.0) {
-                    // Entre 1.1x e 2.0x - chance moderada
-                    crashChance = 0.001 + (multiplierFactor * 0.002);
-                } else if (this.currentMultiplier < 5.0) {
-                    // Entre 2.0x e 5.0x - chance alta
-                    crashChance = 0.005 + (multiplierFactor * 0.008);
-                } else if (this.currentMultiplier < 10.0) {
-                    // Entre 5.0x e 10.0x - chance muito alta
-                    crashChance = 0.02 + (multiplierFactor * 0.01);
+                // Chance de crash aumenta progressivamente com o tempo
+                let baseCrashChance;
+                if (this.gameDuration < 8) {
+                    // 3-8 segundos - chance baixa com aleatoriedade
+                    baseCrashChance = 0.0005 + ((this.gameDuration - 3) * 0.0003);
+                } else if (this.gameDuration < 15) {
+                    // 8-15 segundos - chance moderada com aleatoriedade
+                    baseCrashChance = 0.002 + ((this.gameDuration - 8) * 0.0008);
+                } else if (this.gameDuration < 25) {
+                    // 15-25 segundos - chance alta com aleatoriedade
+                    baseCrashChance = 0.0076 + ((this.gameDuration - 15) * 0.002);
+                } else if (this.gameDuration < 40) {
+                    // 25-40 segundos - chance muito alta com aleatoriedade
+                    baseCrashChance = 0.0276 + ((this.gameDuration - 25) * 0.004);
                 } else {
-                    // Acima de 10.0x - chance extremamente alta
-                    crashChance = 0.05 + (multiplierFactor * 0.02);
+                    // Acima de 40 segundos - chance extremamente alta com aleatoriedade
+                    baseCrashChance = 0.0876 + ((this.gameDuration - 40) * 0.006);
                 }
                 
-                return Math.min(crashChance, 0.25); // Máximo 25% de chance por frame
+                // Aplicar aleatoriedade e garantir valor mínimo
+                const finalChance = Math.max(0.0001, baseCrashChance + randomFactor);
+                
+                return Math.min(finalChance, 0.4); // Máximo 40% de chance por frame
             }
 
 
@@ -2229,12 +2193,15 @@
                 if (!this.isFlying && !this.isExploding) return;
                 
                 if (!this.isExploding) {
-                    // Update multiplier with Blaze-style acceleration
-                    const baseIncrement = 0.004; // Slightly faster base increment
-                    const acceleration = Math.pow(this.currentMultiplier - 1, 0.8) * 0.002; // Progressive acceleration
+                    // Atualizar duração do jogo
+                    this.gameDuration = (Date.now() - this.gameStartTime) / 1000;
+                    
+                    // Update multiplier - mais lento
+                    const baseIncrement = 0.0015; // Incremento base mais lento
+                    const acceleration = Math.pow(this.currentMultiplier - 1, 0.8) * 0.001; // Aceleração reduzida
                     this.currentMultiplier += baseIncrement + acceleration;
                     
-                    // Blaze-style crash probability - very low at start, exponential increase
+                    // Chance de crash baseada no tempo
                     const crashChance = this.calculateCrashChance();
                     if (Math.random() < crashChance) {
                         this.triggerCrash();
@@ -2363,6 +2330,8 @@
 
             startFlying() {
                 this.isFlying = true;
+                this.gameStartTime = Date.now(); // Inicializar tempo de início
+                this.gameDuration = 0;
                 this.gameLoop();
             }
 
