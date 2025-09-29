@@ -469,7 +469,7 @@
             font-weight: 600;
             color: #fff;
             background: #1e2328;
-            border: 2px solid #3c4043;
+            border: 1px solid #5a5d65;
             border-radius: 8px;
             text-align: center;
             outline: none;
@@ -509,7 +509,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: #ffc107;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
             pointer-events: none;
             z-index: 2;
@@ -522,18 +522,18 @@
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
             z-index: 2;
         }
 
         .bet-input-btn {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             background: #3c4043;
-            border: none;
-            border-radius: 3px;
+            border: 1px solid #5a5d65;
+            border-radius: 4px;
             color: #fff;
-            font-size: 12px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -556,8 +556,8 @@
         /* Melhorias para touch em dispositivos móveis */
         @media (max-width: 414px) {
             .bet-input-btn {
-                min-width: 44px;
-                min-height: 44px;
+                min-width: 24px;
+                min-height: 24px;
                 touch-action: manipulation;
                 transition: all 0.2s ease;
             }
@@ -636,13 +636,132 @@
                 }
                 
                 .bet-input {
-                    font-size: 1rem;
-                    padding: 10px 40px 10px 40px;
+                    font-size: 0.9rem;
+                    padding: 10px 35px 10px 35px;
+                }
+                
+                .currency-symbol {
+                    left: 12px;
+                    font-size: 0.8rem;
+                }
+                
+                .bet-input-controls {
+                    right: 5px;
+                    gap: 3px;
+                }
+                
+                .bet-input-btn {
+                    width: 22px;
+                    height: 22px;
+                    font-size: 11px;
+                    min-width: 22px;
+                    min-height: 22px;
                 }
                 
                 .bet-button {
                     font-size: 1rem;
                     padding: 10px;
+                }
+                
+                .header {
+                    padding: 6px 8px;
+                    min-height: 45px;
+                }
+                
+                .balance-amount {
+                    font-size: 0.9rem;
+                    padding: 5px 10px;
+                    min-width: 70px;
+                }
+                
+                .balance-label {
+                    font-size: 0.75rem;
+                }
+            }
+            
+            /* Ajustar para telas maiores (tablets pequenos) */
+            @media (min-width: 415px) and (max-width: 768px) {
+                .bet-input {
+                    font-size: 1.3rem;
+                    padding: 18px 55px 18px 55px;
+                }
+                
+                .currency-symbol {
+                    left: 25px;
+                    font-size: 1.1rem;
+                }
+                
+                .bet-input-controls {
+                    right: 10px;
+                    gap: 8px;
+                }
+                
+                .bet-input-btn {
+                    width: 30px;
+                    height: 30px;
+                    font-size: 15px;
+                    min-width: 30px;
+                    min-height: 30px;
+                }
+            }
+            
+            /* Garantir que o saldo seja sempre visível */
+            @media (max-width: 414px) {
+                .header {
+                    position: relative;
+                    z-index: 100;
+                    background: rgba(40, 44, 52, 0.95);
+                    backdrop-filter: blur(10px);
+                }
+                
+                .balance-display {
+                    flex-shrink: 0;
+                }
+                
+                .balance-amount {
+                    white-space: nowrap;
+                    overflow: visible;
+                }
+            }
+            
+            /* Garantir responsividade máxima do campo de entrada */
+            .bet-input-container {
+                position: relative;
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+            
+            .bet-input {
+                min-width: 0;
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            /* Prevenir quebra de layout em telas muito estreitas */
+            @media (max-width: 320px) {
+                .bet-input {
+                    font-size: 0.8rem;
+                    padding: 8px 30px 8px 30px;
+                }
+                
+                .currency-symbol {
+                    left: 10px;
+                    font-size: 0.7rem;
+                }
+                
+                .bet-input-controls {
+                    right: 4px;
+                    gap: 2px;
+                }
+                
+                .bet-input-btn {
+                    width: 20px;
+                    height: 20px;
+                    font-size: 10px;
+                    min-width: 20px;
+                    min-height: 20px;
                 }
             }
         }
@@ -950,6 +1069,27 @@
 
         /* Media query específica para telas de 6.5 polegadas (360-414px) */
         @media (max-width: 414px) and (min-width: 360px) {
+            .bet-input {
+                font-size: 1.2rem;
+                padding: 15px 50px 15px 50px;
+                height: 50px;
+            }
+            
+            .currency-symbol {
+                left: 20px;
+                font-size: 1.1rem;
+            }
+            
+            .bet-input-controls {
+                right: 4px;
+                gap: 8px;
+            }
+            
+            .bet-input-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
             body {
                 font-size: 13px;
                 overflow-x: hidden;
@@ -959,27 +1099,40 @@
             
             .header {
                 flex-direction: row;
-                justify-content: space-between;
+                justify-content: center;
                 align-items: center;
                 padding: 8px 12px;
                 gap: 8px;
                 min-height: 50px;
+                width: 100%;
+                display: flex;
             }
             
             .balance-display {
                 flex-direction: row;
                 align-items: center;
                 gap: 6px;
+                display: flex;
+                width: 100%;
+                justify-content: center;
             }
             
             .balance-label {
-                font-size: 0.75rem;
+                font-size: 0.8rem;
+                color: #888;
+                font-weight: 500;
             }
             
             .balance-amount {
-                font-size: 0.9rem;
-                padding: 5px 10px;
+                font-size: 1rem;
+                padding: 6px 12px;
                 border-radius: 20px;
+                background: #1e2328;
+                color: #fff;
+                font-weight: 600;
+                border: 1px solid #3c4043;
+                min-width: 80px;
+                text-align: center;
             }
             
             .game-container {
@@ -1104,35 +1257,66 @@
             }
             
             .bet-input {
-                font-size: 1.1rem;
-                padding: 12px 45px 12px 45px;
-                border-radius: 6px;
+                font-size: clamp(1rem, 4vw, 1.2rem);
+                padding: 15px 50px 15px 50px;
+                border-radius: 8px;
                 appearance: none;
                 -webkit-appearance: none;
                 -moz-appearance: textfield;
                 touch-action: manipulation;
+                background: #1e2328;
+                border: 1px solid #5a5d65;
+                color: #fff;
+                font-weight: 600;
+                text-align: center;
+                width: 100%;
+                box-sizing: border-box;
+                height: 50px;
             }
             
             .currency-symbol {
-                left: 18px;
-                font-size: 0.9rem;
+                left: 20px;
+                font-size: 1.1rem;
+                color: #ffc107;
+                font-weight: 700;
             }
             
             .bet-input-controls {
-                right: 10px;
-                gap: 4px;
+                right: 4px;
+                gap: 8px;
+                flex-direction: column;
+                top: 50%;
+                transform: translateY(-50%);
+                position: absolute;
             }
             
             .bet-input-btn {
-                width: 20px;
-                height: 20px;
-                font-size: 12px;
-                border-radius: 3px;
-                min-width: 44px;
-                min-height: 44px;
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+                border-radius: 6px;
+                min-width: 32px;
+                min-height: 32px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                background: #3c4043;
+                border: 1px solid #5a5d65;
+                color: #fff;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            
+            .bet-input-btn:hover {
+                background: #5a5d65;
+                transform: scale(1.05);
+            }
+            
+            .bet-input-btn:active {
+                transform: scale(0.95);
+                background: #ff4757;
             }
             
             .bet-input-label {
