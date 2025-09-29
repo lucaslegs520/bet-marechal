@@ -1812,89 +1812,36 @@
             initializeCanvas() {
                 this.resizeCanvas();
                 
-                // Debounce para resize events
-                let resizeTimeout;
-                const debouncedResize = () => {
-                    clearTimeout(resizeTimeout);
-                    resizeTimeout = setTimeout(() => this.resizeCanvas(), 100);
-                };
+                // Listener simples para resize - só redimensiona quando não está rodando
+                window.addEventListener('resize', () => {
+                    this.resizeCanvas();
+                });
                 
-                window.addEventListener('resize', debouncedResize);
-                
-                // Listener específico para mudanças de orientação
+                // Listener para mudanças de orientação (mobile)
                 window.addEventListener('orientationchange', () => {
-                    setTimeout(() => this.resizeCanvas(), 200);
-                });
-                
-                // Listener para mudanças de foco (abertura/fechamento do teclado)
-                window.addEventListener('focus', () => {
-                    setTimeout(() => this.resizeCanvas(), 150);
-                });
-                
-                // Listener para mudanças de visibilidade (minimizar/maximizar)
-                document.addEventListener('visibilitychange', () => {
-                    if (!document.hidden) {
-                        setTimeout(() => this.resizeCanvas(), 100);
-                    }
+                    setTimeout(() => this.resizeCanvas(), 300);
                 });
             }
 
             resizeCanvas() {
+                // Se o jogo está rodando, NÃO redimensionar para evitar problemas
+                if (this.isFlying && !this.isExploding) {
+                    return;
+                }
+                
                 const container = this.canvas.parentElement;
-                const oldWidth = this.canvas.width;
-                const oldHeight = this.canvas.height;
                 const newWidth = container.clientWidth;
                 const newHeight = container.clientHeight;
                 
-                // Evitar redimensionamento desnecessário
-                if (oldWidth === newWidth && oldHeight === newHeight) {
-                    return;
-                }
-                
-                // Só redimensionar se a mudança for significativa (mais de 10px)
-                const widthDiff = Math.abs(newWidth - oldWidth);
-                const heightDiff = Math.abs(newHeight - oldHeight);
-                
-                if (widthDiff < 10 && heightDiff < 10) {
-                    return;
-                }
-                
+                // Só redimensionar se não estiver rodando
                 this.canvas.width = newWidth;
                 this.canvas.height = newHeight;
                 
-                // Se o jogo está rodando, manter a posição relativa do avião
-                if (this.isFlying && !this.isExploding && oldWidth > 0 && oldHeight > 0) {
-                    // Calcular a proporção de redimensionamento
-                    const scaleX = newWidth / oldWidth;
-                    const scaleY = newHeight / oldHeight;
-                    
-                    // Só ajustar se a mudança for significativa
-                    if (Math.abs(scaleX - 1) > 0.1 || Math.abs(scaleY - 1) > 0.1) {
-                        // Ajustar posição do avião proporcionalmente
-                        this.planeX = this.planeX * scaleX;
-                        this.planeY = this.planeY * scaleY;
-                        
-                        // Ajustar o caminho da trilha proporcionalmente
-                        this.dotPath = this.dotPath.map(point => ({
-                            x: point.x * scaleX,
-                            y: point.y * scaleY
-                        }));
-                        
-                        // Ajustar a câmera proporcionalmente
-                        this.cameraX = this.cameraX * scaleX;
-                        this.cameraY = this.cameraY * scaleY;
-                        
-                        // Garantir que o avião não saia dos limites
-                        this.planeX = Math.max(50, Math.min(this.planeX, newWidth - 50));
-                        this.planeY = Math.max(50, Math.min(this.planeY, newHeight - 50));
-                    }
-                } else {
-                    // Se não está rodando, posicionar normalmente
-                    this.planeX = 50;
-                    this.planeY = newHeight - 50;
-                    this.cameraX = 0;
-                    this.cameraY = 0;
-                }
+                // Posicionar normalmente quando não está rodando
+                this.planeX = 50;
+                this.planeY = newHeight - 50;
+                this.cameraX = 0;
+                this.cameraY = 0;
             }
 
             initializeEventListeners() {
@@ -2364,6 +2311,9 @@
             }
 
             startNewRound() {
+                // Redimensionar canvas antes de começar nova rodada
+                this.resizeCanvas();
+                
                 this.currentMultiplier = 1.0;
                 this.planeX = 50;
                 this.planeY = this.canvas.height - 50;
