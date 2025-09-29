@@ -2,7 +2,10 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>BET MATEMATICA FAETEC</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -550,6 +553,100 @@
             background: #ff4757;
         }
 
+        /* Melhorias para touch em dispositivos móveis */
+        @media (max-width: 414px) {
+            .bet-input-btn {
+                min-width: 44px;
+                min-height: 44px;
+                touch-action: manipulation;
+                transition: all 0.2s ease;
+            }
+            
+            .bet-input-btn:active {
+                transform: scale(0.9);
+                background: #ff4757;
+            }
+            
+            .quick-bet {
+                min-width: 44px;
+                min-height: 44px;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+                transition: all 0.2s ease;
+            }
+            
+            .quick-bet:active {
+                transform: scale(0.95);
+                background: linear-gradient(135deg, rgba(255, 71, 87, 0.3), rgba(255, 71, 87, 0.4));
+            }
+            
+            .bet-button {
+                min-height: 48px;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+                transition: all 0.2s ease;
+            }
+            
+            .bet-button:active {
+                transform: scale(0.98);
+            }
+            
+            .counter-item {
+                min-height: 36px;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+                transition: all 0.2s ease;
+            }
+            
+            .counter-item:active {
+                transform: scale(0.95);
+            }
+            
+            .stat-item {
+                min-height: 40px;
+                touch-action: manipulation;
+            }
+            
+            /* Melhorar scroll suave */
+            .history-counters {
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Otimizar para telas pequenas */
+            .game-container {
+                min-height: calc(100vh - 60px);
+                min-height: calc(100dvh - 60px);
+            }
+            
+            /* Melhorar legibilidade */
+            .multiplier-display {
+                font-weight: 900;
+                letter-spacing: -0.5px;
+            }
+            
+            /* Ajustar espaçamentos para telas muito pequenas */
+            @media (max-width: 375px) {
+                .canvas-container {
+                    height: 160px;
+                }
+                
+                .multiplier-display {
+                    font-size: 1.6rem;
+                }
+                
+                .bet-input {
+                    font-size: 1rem;
+                    padding: 10px 40px 10px 40px;
+                }
+                
+                .bet-button {
+                    font-size: 1rem;
+                    padding: 10px;
+                }
+            }
+        }
+
         .bet-input-label {
             position: absolute;
             top: -30px;
@@ -848,6 +945,267 @@
             50% {
                 text-shadow: 0 0 50px rgba(255, 193, 7, 0.9);
                 filter: drop-shadow(0 0 30px rgba(255, 193, 7, 0.8));
+            }
+        }
+
+        /* Media query específica para telas de 6.5 polegadas (360-414px) */
+        @media (max-width: 414px) and (min-width: 360px) {
+            body {
+                font-size: 13px;
+                overflow-x: hidden;
+                height: 100vh;
+                height: 100dvh; /* Dynamic viewport height para mobile */
+            }
+            
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 12px;
+                gap: 8px;
+                min-height: 50px;
+            }
+            
+            .balance-display {
+                flex-direction: row;
+                align-items: center;
+                gap: 6px;
+            }
+            
+            .balance-label {
+                font-size: 0.75rem;
+            }
+            
+            .balance-amount {
+                font-size: 0.9rem;
+                padding: 5px 10px;
+                border-radius: 20px;
+            }
+            
+            .game-container {
+                padding: 8px;
+                gap: 12px;
+                flex: 1;
+                min-height: 0;
+            }
+            
+            .stats-overlay {
+                position: relative;
+                top: auto;
+                left: auto;
+                justify-content: center;
+                margin-bottom: 12px;
+                flex-wrap: wrap;
+                gap: 6px;
+                order: 1;
+            }
+            
+            .stat-item {
+                padding: 6px 10px;
+                min-width: 55px;
+                flex: 1;
+                max-width: 70px;
+                border-radius: 12px;
+            }
+            
+            .stat-value {
+                font-size: 0.9rem;
+            }
+            
+            .stat-label {
+                font-size: 0.55rem;
+            }
+
+            .quick-bets {
+                position: relative;
+                top: auto;
+                right: auto;
+                justify-content: center;
+                margin-bottom: 12px;
+                order: 2;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            
+            .quick-bet {
+                padding: 8px 12px;
+                font-size: 0.75rem;
+                min-width: 55px;
+                flex: 1;
+                max-width: 70px;
+                border-radius: 6px;
+            }
+            
+            .canvas-container {
+                height: 180px;
+                margin-bottom: 12px;
+                order: 3;
+                border-radius: 6px;
+                position: relative;
+                overflow: hidden;
+                background: #1e2328;
+                border: 1px solid #3c4043;
+            }
+            
+            .multiplier-display {
+                font-size: 1.8rem;
+                top: 12px;
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+                z-index: 10;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            #canvas {
+                width: 100% !important;
+                height: 100% !important;
+                border-radius: 6px;
+                background: #1e2328;
+            }
+            
+            .history-section {
+                margin: 12px 0;
+                padding: 8px;
+                order: 4;
+            }
+            
+            .history-title {
+                font-size: 0.75rem;
+                margin-bottom: 6px;
+            }
+            
+            .history-counters {
+                gap: 4px;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding: 4px 0;
+                justify-content: flex-start;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .counter-item {
+                padding: 5px 8px;
+                font-size: 0.75rem;
+                min-width: 45px;
+                flex-shrink: 0;
+                border-radius: 3px;
+            }
+            
+            .controls-container {
+                flex-direction: column;
+                width: 100%;
+                gap: 12px;
+                order: 5;
+            }
+            
+            .bet-input-container {
+                width: 100%;
+            }
+            
+            .bet-input {
+                font-size: 1.1rem;
+                padding: 12px 45px 12px 45px;
+                border-radius: 6px;
+                appearance: none;
+                -webkit-appearance: none;
+                -moz-appearance: textfield;
+                touch-action: manipulation;
+            }
+            
+            .currency-symbol {
+                left: 18px;
+                font-size: 0.9rem;
+            }
+            
+            .bet-input-controls {
+                right: 10px;
+                gap: 4px;
+            }
+            
+            .bet-input-btn {
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+                border-radius: 3px;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .bet-input-label {
+                top: -22px;
+                font-size: 0.65rem;
+            }
+            
+            .bet-button {
+                width: 100%;
+                padding: 12px;
+                font-size: 1.1rem;
+                border-radius: 6px;
+            }
+            
+            .countdown-bar {
+                width: 90%;
+                height: 35px;
+                border-radius: 6px;
+            }
+            
+            .countdown-content {
+                font-size: 14px;
+            }
+            
+            .countdown-text {
+                font-size: 14px;
+            }
+            
+            .countdown-timer {
+                font-size: 14px;
+            }
+
+            .educational-notice {
+                bottom: 4px;
+                right: 4px;
+                font-size: 0.55rem;
+                max-width: 140px;
+                padding: 5px 6px;
+                border-radius: 3px;
+            }
+            
+            .warning-content {
+                padding: 25px 15px;
+                margin: 8px;
+                max-width: 95%;
+                border-radius: 12px;
+            }
+            
+            .warning-title {
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+            
+            .warning-subtitle {
+                font-size: 1rem;
+                margin-bottom: 20px;
+            }
+            
+            .warning-description {
+                font-size: 0.85rem;
+                margin-bottom: 20px;
+                line-height: 1.3;
+            }
+            
+            .confirm-button {
+                padding: 10px 25px;
+                font-size: 0.9rem;
+                border-radius: 8px;
+            }
+            
+            .warning-icon {
+                font-size: 3rem;
+                margin: 0 auto 20px auto;
             }
         }
 
