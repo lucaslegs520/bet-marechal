@@ -1815,7 +1815,7 @@
         }
 
         .credits-school-name::before {
-            content: '🎓';
+            content: '';
             margin-right: 8px;
         }
 
@@ -4593,18 +4593,8 @@
                     tile.classList.add('diamond');
                     tile.innerHTML = `
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <!-- Faceta principal superior -->
-                            <path d="M10 2L16 8L10 8L4 8L10 2Z" fill="#ff6b7a"/>
-                            <!-- Faceta superior esquerda -->
-                            <path d="M10 2L4 8L10 8Z" fill="#ff4757"/>
-                            <!-- Faceta superior direita -->
-                            <path d="M10 2L16 8L10 8Z" fill="#ff8a95"/>
-                            <!-- Faceta inferior esquerda -->
-                            <path d="M10 8L4 8L10 14Z" fill="#e63946"/>
-                            <!-- Faceta inferior direita -->
-                            <path d="M10 8L16 8L10 14Z" fill="#dc2626"/>
-                            <!-- Faceta central -->
-                            <path d="M10 8L13 11L10 14L7 11L10 8Z" fill="#ff4757"/>
+                            <path d="M10 2L16 8L10 14L4 8L10 2Z" fill="#ff4757"/>
+                            <path d="M10 2L13 5L10 8L7 5L10 2Z" fill="#ff6b7a"/>
                         </svg>
                     `;
                     this.revealedTiles++;
@@ -4680,18 +4670,8 @@
                             } else {
                                 tile.innerHTML = `
                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                        <!-- Faceta principal superior -->
-                                        <path d="M10 2L16 8L10 8L4 8L10 2Z" fill="#ff6b7a"/>
-                                        <!-- Faceta superior esquerda -->
-                                        <path d="M10 2L4 8L10 8Z" fill="#ff4757"/>
-                                        <!-- Faceta superior direita -->
-                                        <path d="M10 2L16 8L10 8Z" fill="#ff8a95"/>
-                                        <!-- Faceta inferior esquerda -->
-                                        <path d="M10 8L4 8L10 14Z" fill="#e63946"/>
-                                        <!-- Faceta inferior direita -->
-                                        <path d="M10 8L16 8L10 14Z" fill="#dc2626"/>
-                                        <!-- Faceta central -->
-                                        <path d="M10 8L13 11L10 14L7 11L10 8Z" fill="#ff4757"/>
+                                        <path d="M10 2L16 8L10 14L4 8L10 2Z" fill="#ff4757"/>
+                                        <path d="M10 2L13 5L10 8L7 5L10 2Z" fill="#ff6b7a"/>
                                     </svg>
                                 `;
                             }
