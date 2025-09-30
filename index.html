@@ -6,6 +6,12 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#282c34">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="no-referrer">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <title>BET MATEMATICA FAETEC</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,6 +21,28 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Otimizações de performance para dispositivos móveis */
+        html {
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeSpeed;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Reduzir animações em dispositivos com preferência por movimento reduzido */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         body {
@@ -39,7 +67,7 @@
             border-right: 1px solid #2a2d34;
             display: flex;
             flex-direction: column;
-            transition: left 0.3s ease;
+            transition: left 0.2s ease;
             z-index: 1000;
             overflow-y: auto;
         }
@@ -94,7 +122,7 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             z-index: 999;
             box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
             margin-left: -1px;
@@ -111,7 +139,7 @@
             font-size: 2rem;
             color: #888;
             font-weight: bold;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .sidebar-toggle-arrow:hover::before {
@@ -181,7 +209,7 @@
 
         /* Estilos específicos para os novos ícones */
         .crash-icon svg {
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .crash-icon:hover svg {
@@ -197,7 +225,7 @@
         }
 
         .mines-icon svg {
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .mines-icon:hover svg {
@@ -230,7 +258,7 @@
                 filter: brightness(1);
             }
             50% {
-                filter: brightness(1.1);
+                filter: brightness(1.05);
             }
         }
 
@@ -239,7 +267,7 @@
                 filter: brightness(1);
             }
             50% {
-                filter: brightness(1.1);
+                filter: brightness(1.05);
             }
         }
 
@@ -250,7 +278,7 @@
             display: flex;
             flex-direction: column;
             margin-left: 240px;
-            transition: margin-left 0.3s ease;
+            transition: margin-left 0.2s ease;
             width: calc(100% - 240px);
             height: 100vh;
             overflow-y: auto;
@@ -291,7 +319,7 @@
             z-index: 999;
             display: none;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.2s ease;
         }
 
         .sidebar-overlay.show {
@@ -714,7 +742,7 @@
             border: 1px solid #3c4043;
             margin-bottom: 30px;
             animation: fadeInUp 1s ease-out 0.2s both;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
 
@@ -790,7 +818,7 @@
         }
 
         .countdown-bar.show {
-            animation: fadeInCountdown 0.5s ease-out forwards;
+            animation: fadeInCountdown 0.3s ease-out forwards;
         }
 
         .countdown-bar.hide {
@@ -997,11 +1025,11 @@
         }
 
         .slide-in-right {
-            animation: slideInRight 0.5s ease-out;
+            animation: slideInRight 0.3s ease-out;
         }
 
         .slide-in-left {
-            animation: slideInLeft 0.5s ease-out;
+            animation: slideInLeft 0.3s ease-out;
         }
 
         .glow-effect {
@@ -1027,7 +1055,7 @@
         }
 
         .slide-out-to-right {
-            animation: slideOutToRight 0.3s ease-in;
+            animation: slideOutToRight 0.2s ease-in;
         }
 
         .controls-container {
@@ -1509,7 +1537,7 @@
             gap: 20px;
             z-index: 5;
             animation: slideInLeft 0.8s ease-out 0.4s both;
-            transition: left 0.3s ease;
+            transition: left 0.2s ease;
         }
 
         /* Ajustar stats-overlay no desktop para não sobrepor a seta */
@@ -1556,7 +1584,7 @@
             justify-content: center;
             align-items: center;
             z-index: 10000;
-            animation: fadeIn 0.5s ease-out;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .warning-modal.hidden {
@@ -1622,7 +1650,7 @@
             font-weight: 700;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
@@ -1711,7 +1739,7 @@
             max-width: 450px;
             width: 90%;
             margin: 20px;
-            animation: slideInUp 0.3s ease-out;
+            animation: slideInUp 0.2s ease-out;
             position: relative;
         }
 
@@ -1893,12 +1921,12 @@
 
         .multiplier-value {
             color: #fff;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .profit-value {
             color: #fff;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         /* Classes dinâmicas para multiplicador */
@@ -1958,7 +1986,7 @@
 
         /* Animação cascata para os tiles - apenas quando tem a classe 'animate' */
         .mine-tile.animate {
-            animation: scaleIn 0.3s ease-out both;
+            animation: scaleIn 0.2s ease-out both;
         }
 
         .mine-tile.animate:nth-child(1) { animation-delay: 0.45s; }
@@ -2042,7 +2070,7 @@
         }
 
         .mine-tile.bomb svg {
-            animation: bombPulse 0.5s ease-out;
+            animation: bombPulse 0.3s ease-out;
         }
 
         .mine-tile.diamond {
@@ -3272,6 +3300,48 @@
             }
         }
         
+        /* Otimizações adicionais para dispositivos móveis muito fracos */
+        @media (max-width: 360px) {
+            /* Reduzir ainda mais as animações */
+            *, *::before, *::after {
+                animation-duration: 0.05s !important;
+                transition-duration: 0.05s !important;
+            }
+            
+            /* Desabilitar todos os efeitos visuais pesados */
+            .mine-tile::before,
+            .mines-option::before,
+            .bet-button::before,
+            .mines-start-btn::before,
+            .mines-cashout-btn::before,
+            .sidebar-menu-item::before {
+                display: none !important;
+            }
+            
+            /* Reduzir tamanhos para economizar espaço */
+            .canvas-container {
+                height: 150px;
+            }
+            
+            .multiplier-display {
+                font-size: 1.5rem;
+            }
+            
+            .stat-item {
+                padding: 4px 6px;
+                min-width: 40px;
+                max-width: 60px;
+            }
+            
+            .stat-value {
+                font-size: 0.8rem;
+            }
+            
+            .stat-label {
+                font-size: 0.4rem;
+            }
+        }
+
         @media (max-width: 480px) {
             .canvas-container {
                 height: 180px;
@@ -3776,9 +3846,12 @@
             initializeCanvas() {
                 this.resizeCanvas();
                 
+                // Detectar dispositivos com baixa performance
+                this.isLowPerformance = this.detectLowPerformance();
+                
                 // Otimizações de canvas para melhor performance
-                this.ctx.imageSmoothingEnabled = true;
-                this.ctx.imageSmoothingQuality = 'low'; // Reduzir qualidade para melhor performance
+                this.ctx.imageSmoothingEnabled = !this.isLowPerformance;
+                this.ctx.imageSmoothingQuality = this.isLowPerformance ? 'low' : 'medium';
                 
                 // Debounce para resize (evitar múltiplas chamadas)
                 let resizeTimeout;
@@ -3799,6 +3872,19 @@
                         }
                     }, 300);
                 });
+            }
+            
+            detectLowPerformance() {
+                // Detectar dispositivos com baixa performance baseado em várias características
+                const isMobile = window.innerWidth <= 768;
+                const isSmallScreen = window.innerWidth <= 360;
+                const isOldDevice = navigator.userAgent.includes('Android 4') || 
+                                  navigator.userAgent.includes('Android 5') ||
+                                  navigator.userAgent.includes('iPhone OS 9') ||
+                                  navigator.userAgent.includes('iPhone OS 10');
+                const hasLowMemory = navigator.deviceMemory && navigator.deviceMemory <= 2;
+                
+                return isMobile && (isSmallScreen || isOldDevice || hasLowMemory);
             }
 
             resizeCanvas() {
@@ -4121,15 +4207,18 @@
                     // Add to path
                     this.dotPath.push({ x: this.planeX, y: this.planeY });
                     
-                    // Keep path length reasonable for performance
-                    if (this.dotPath.length > 120) {
+                    // Keep path length reasonable for performance (reduzido em mobile)
+                    const maxPathLength = this.isLowPerformance ? 50 : (window.innerWidth <= 768 ? 80 : 120);
+                    if (this.dotPath.length > maxPathLength) {
                         this.dotPath.shift();
                     }
                 }
                 
                 // Draw trail with smooth color transitions (otimizado)
                 if (this.dotPath.length > 1) {
-                    this.ctx.lineWidth = 4;
+                    const isMobile = window.innerWidth <= 768;
+                    
+                    this.ctx.lineWidth = this.isLowPerformance ? 2 : (isMobile ? 3 : 4);
                     this.ctx.lineCap = 'round';
                     this.ctx.lineJoin = 'round';
                     
@@ -4141,8 +4230,9 @@
                     this.ctx.beginPath();
                     this.ctx.moveTo(this.dotPath[0].x, this.dotPath[0].y);
                     
-                    // Desenhar linha completa primeiro (sólida)
-                    for (let i = 1; i < this.dotPath.length; i++) {
+                    // Otimização para mobile: reduzir pontos da trilha
+                    const stepSize = this.isLowPerformance ? 3 : (isMobile ? 2 : 1);
+                    for (let i = stepSize; i < this.dotPath.length; i += stepSize) {
                         this.ctx.lineTo(this.dotPath[i].x, this.dotPath[i].y);
                     }
                     
@@ -4181,11 +4271,14 @@
                     this.ctx.arc(this.planeX, this.planeY, 15, 0, 2 * Math.PI);
                     this.ctx.fill();
                     
-                    // Add pulsing effect for explosion
-                    this.ctx.fillStyle = explosionColorRgba;
-                    this.ctx.beginPath();
-                    this.ctx.arc(this.planeX, this.planeY, 25, 0, 2 * Math.PI);
-                    this.ctx.fill();
+                    // Add pulsing effect for explosion (reduzido em mobile)
+                    const isMobile = window.innerWidth <= 768;
+                    if (!isMobile) {
+                        this.ctx.fillStyle = explosionColorRgba;
+                        this.ctx.beginPath();
+                        this.ctx.arc(this.planeX, this.planeY, 25, 0, 2 * Math.PI);
+                        this.ctx.fill();
+                    }
                 } else if (this.isFlying) {
                     // Get smooth colors for the point
                     const colors = this.getSmoothColor(this.currentMultiplier);
@@ -4196,11 +4289,14 @@
                     this.ctx.arc(this.planeX, this.planeY, 8, 0, 2 * Math.PI);
                     this.ctx.fill();
                     
-                    // Add glow effect with matching transparent color
-                    this.ctx.fillStyle = colors.transparent;
-                    this.ctx.beginPath();
-                    this.ctx.arc(this.planeX, this.planeY, 12, 0, 2 * Math.PI);
-                    this.ctx.fill();
+                    // Add glow effect with matching transparent color (reduzido em mobile)
+                    const isMobile = window.innerWidth <= 768;
+                    if (!isMobile) {
+                        this.ctx.fillStyle = colors.transparent;
+                        this.ctx.beginPath();
+                        this.ctx.arc(this.planeX, this.planeY, 12, 0, 2 * Math.PI);
+                        this.ctx.fill();
+                    }
                 }
                 
                 // Restore the transformation matrix
@@ -4211,10 +4307,22 @@
                 if (!this.isFlying && !this.isExploding) return;
                 if (this.isPaused) return; // Parar se estiver pausado
                 
+                // Otimização para dispositivos móveis fracos - reduzir FPS
+                const isMobile = window.innerWidth <= 768;
+                const targetFPS = this.isLowPerformance ? 20 : (isMobile ? 30 : 60);
+                const frameInterval = 1000 / targetFPS;
+                
                 // Calcular deltaTime (tempo desde o último frame em segundos)
                 if (this.lastFrameTime === 0) {
                     this.lastFrameTime = currentTime;
                 }
+                
+                // Skip frame se não passou tempo suficiente (limitação de FPS)
+                if (currentTime - this.lastFrameTime < frameInterval) {
+                    this.animationId = requestAnimationFrame((time) => this.gameLoop(time));
+                    return;
+                }
+                
                 this.deltaTime = (currentTime - this.lastFrameTime) / 1000; // Converter para segundos
                 this.lastFrameTime = currentTime;
                 
@@ -4237,7 +4345,10 @@
                         return;
                     }
                     
-                    this.updateDisplay();
+                    // Reduzir frequência de atualização de display em mobile
+                    if (!isMobile || Math.floor(currentTime / 100) !== Math.floor((currentTime - this.deltaTime * 1000) / 100)) {
+                        this.updateDisplay();
+                    }
                 }
                 
                 // Update camera to follow the plane
