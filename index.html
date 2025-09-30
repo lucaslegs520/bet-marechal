@@ -24,7 +24,212 @@
             overflow: hidden;
             height: 100vh;
             display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #1a1d24;
+            border-right: 1px solid #2a2d34;
+            display: flex;
             flex-direction: column;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.closed {
+            left: -240px;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid #2a2d34;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            display: none;
+        }
+
+        .sidebar-close:hover {
+            color: #fff;
+        }
+
+        /* Sidebar Toggle Arrow */
+        .sidebar-toggle-arrow {
+            position: fixed;
+            left: 240px;
+            top: 80px;
+            width: 30px;
+            height: 60px;
+            background: #1a1d24;
+            border: 1px solid #2a2d34;
+            border-left: none;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            margin-left: -1px;
+        }
+
+        .sidebar-toggle-arrow:hover {
+            background: #252a32;
+            border-color: #3c4043;
+            width: 35px;
+        }
+
+        .sidebar-toggle-arrow::before {
+            content: '‹';
+            font-size: 2rem;
+            color: #888;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle-arrow:hover::before {
+            color: #ff4757;
+        }
+
+        .sidebar-toggle-arrow.closed {
+            left: 0;
+            margin-left: 0;
+        }
+
+        .sidebar-toggle-arrow.closed::before {
+            content: '›';
+        }
+
+        .sidebar-section {
+            padding: 20px 0;
+            border-bottom: 1px solid #2a2d34;
+        }
+
+        .sidebar-section-title {
+            padding: 0 20px 10px;
+            font-size: 0.75rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #888;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .sidebar-menu-item.active {
+            background: rgba(255, 71, 87, 0.1);
+            color: #fff;
+            border-left-color: #ff4757;
+        }
+
+        .sidebar-menu-icon {
+            font-size: 1.3rem;
+            width: 24px;
+            text-align: center;
+        }
+
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 240px;
+            transition: margin-left 0.3s ease;
+            width: calc(100% - 240px);
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .main-content.sidebar-closed {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        /* Scrollbar customizada para main-content */
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Overlay for mobile */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
         }
 
         .header {
@@ -35,9 +240,10 @@
             background: rgba(255, 255, 255, 0.05);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             animation: fadeInUp 0.8s ease-out;
-            min-height: 60px;
+            height: 70px;
             flex-wrap: nowrap;
-            overflow: hidden;
+            gap: 15px;
+            flex-shrink: 0;
         }
 
         .game-title {
@@ -409,7 +615,7 @@
         .balance-amount {
             background: #1e2328;
             padding: 10px 20px;
-            border-radius: 25px;
+            border-radius: 8px;
             font-size: 1.2rem;
             font-weight: 600;
             color: #fff;
@@ -427,6 +633,7 @@
             align-items: center;
             position: relative;
             padding: 20px;
+            overflow: hidden;
         }
 
         .canvas-container {
@@ -516,7 +723,33 @@
         }
 
         .countdown-bar.show {
-            display: block;
+            animation: fadeInCountdown 0.5s ease-out forwards;
+        }
+
+        .countdown-bar.hide {
+            animation: fadeOutCountdown 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeInCountdown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes fadeOutCountdown {
+            from {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.95);
+            }
         }
 
         .countdown-progress {
@@ -1209,6 +1442,18 @@
             gap: 20px;
             z-index: 5;
             animation: slideInLeft 0.8s ease-out 0.4s both;
+            transition: left 0.3s ease;
+        }
+
+        /* Ajustar stats-overlay no desktop para não sobrepor a seta */
+        @media (min-width: 769px) {
+            .stats-overlay {
+                left: 40px;
+            }
+
+            .main-content.sidebar-closed .stats-overlay {
+                left: 40px;
+            }
         }
 
         .stat-item {
@@ -1369,40 +1614,6 @@
             }
         }
 
-        /* Credits Button - Estilo Bet */
-        .credits-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #1e2328;
-            border: 1px solid #3c4043;
-            color: #888;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .credits-button:hover {
-            background: #252a32;
-            border-color: #5a5d65;
-            color: #fff;
-        }
-
-        .credits-button::before {
-            content: '©';
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #ffc107;
-        }
 
         /* Credits Modal - Estilo Bet */
         .credits-modal {
@@ -1539,6 +1750,769 @@
         .credits-school-name::before {
             content: '🎓';
             margin-right: 8px;
+        }
+
+        /* Mines Game Styles */
+        #mines-game {
+            padding: 10px 20px;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .mines-header {
+            width: 100%;
+            margin-bottom: 10px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .mines-info {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .mines-info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(30, 35, 40, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(60, 64, 67, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .mines-info-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 71, 87, 0.4);
+        }
+
+        .mines-info-item:nth-child(1) {
+            animation-delay: 0.1s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .mines-info-item:nth-child(2) {
+            animation-delay: 0.2s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .mines-info-item:nth-child(3) {
+            animation-delay: 0.3s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .mines-info-label {
+            color: #888;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .mines-info-value {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .multiplier-value {
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .profit-value {
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        /* Classes dinâmicas para multiplicador */
+        .multiplier-value.white { color: #fff; text-shadow: none; }
+        .multiplier-value.yellow { color: #ffc107; text-shadow: 0 0 10px rgba(255, 193, 7, 0.5); }
+        .multiplier-value.orange { color: #ffa500; text-shadow: 0 0 10px rgba(255, 165, 0, 0.5); }
+        .multiplier-value.red { color: #ff4757; text-shadow: 0 0 10px rgba(255, 71, 87, 0.5); }
+
+        /* Classes dinâmicas para lucro */
+        .profit-value.white { color: #fff; text-shadow: none; }
+        .profit-value.green { color: #2ecc71; text-shadow: 0 0 10px rgba(46, 204, 113, 0.5); }
+
+        .mines-grid-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            overflow: visible;
+            padding: 5px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .mines-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 15px;
+            background: rgba(30, 35, 40, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(60, 64, 67, 0.3);
+            min-width: min-content;
+            backdrop-filter: blur(10px);
+        }
+
+
+        .mine-tile {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12));
+            border: 1px solid rgba(60, 64, 67, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Animação cascata para os tiles - apenas quando tem a classe 'animate' */
+        .mine-tile.animate {
+            animation: scaleIn 0.3s ease-out both;
+        }
+
+        .mine-tile.animate:nth-child(1) { animation-delay: 0.45s; }
+        .mine-tile.animate:nth-child(2) { animation-delay: 0.48s; }
+        .mine-tile.animate:nth-child(3) { animation-delay: 0.51s; }
+        .mine-tile.animate:nth-child(4) { animation-delay: 0.54s; }
+        .mine-tile.animate:nth-child(5) { animation-delay: 0.57s; }
+        .mine-tile.animate:nth-child(6) { animation-delay: 0.50s; }
+        .mine-tile.animate:nth-child(7) { animation-delay: 0.53s; }
+        .mine-tile.animate:nth-child(8) { animation-delay: 0.56s; }
+        .mine-tile.animate:nth-child(9) { animation-delay: 0.59s; }
+        .mine-tile.animate:nth-child(10) { animation-delay: 0.62s; }
+        .mine-tile.animate:nth-child(11) { animation-delay: 0.55s; }
+        .mine-tile.animate:nth-child(12) { animation-delay: 0.58s; }
+        .mine-tile.animate:nth-child(13) { animation-delay: 0.61s; }
+        .mine-tile.animate:nth-child(14) { animation-delay: 0.64s; }
+        .mine-tile.animate:nth-child(15) { animation-delay: 0.67s; }
+        .mine-tile.animate:nth-child(16) { animation-delay: 0.60s; }
+        .mine-tile.animate:nth-child(17) { animation-delay: 0.63s; }
+        .mine-tile.animate:nth-child(18) { animation-delay: 0.66s; }
+        .mine-tile.animate:nth-child(19) { animation-delay: 0.69s; }
+        .mine-tile.animate:nth-child(20) { animation-delay: 0.72s; }
+        .mine-tile.animate:nth-child(21) { animation-delay: 0.65s; }
+        .mine-tile.animate:nth-child(22) { animation-delay: 0.68s; }
+        .mine-tile.animate:nth-child(23) { animation-delay: 0.71s; }
+        .mine-tile.animate:nth-child(24) { animation-delay: 0.74s; }
+        .mine-tile.animate:nth-child(25) { animation-delay: 0.77s; }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .mine-tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .mine-tile:hover:not(.revealed):not(.disabled) {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.3));
+            border-color: #ff4757;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.3);
+        }
+
+        .mine-tile:active:not(.revealed):not(.disabled) {
+            transform: scale(0.95);
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.3), rgba(255, 71, 87, 0.4));
+        }
+
+        .mine-tile:hover::before {
+            left: 100%;
+        }
+
+        .mine-tile.revealed {
+            cursor: default;
+        }
+
+        .mine-tile.diamond {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 165, 0, 0.3));
+            border-color: #ffc107;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+        }
+
+        .mine-tile.bomb {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.3), rgba(231, 76, 60, 0.3));
+            border-color: #ff4757;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+        }
+
+        /* Animação de revelação das minas */
+        .mine-tile.reveal-animate {
+            animation: revealFade 0.4s ease-out both;
+        }
+
+        @keyframes revealFade {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotateY(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+        }
+
+        /* Animação de esconder as minas (reverso) */
+        .mine-tile.hide-animate {
+            animation: hideFade 0.4s ease-out both;
+        }
+
+        @keyframes hideFade {
+            from {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.8) rotateY(-90deg);
+            }
+        }
+
+        .mine-tile.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .mines-controls {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+            background: rgba(30, 35, 40, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(60, 64, 67, 0.3);
+            animation: fadeInUp 1s ease-out 0.6s both;
+            backdrop-filter: blur(10px);
+        }
+
+        .mines-settings {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .setting-label {
+            color: #888;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .mines-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mines-option {
+            flex: 1;
+            min-width: 60px;
+            padding: 12px 20px;
+            background: #1e2328;
+            border: 1px solid #5a5d65;
+            border-radius: 8px;
+            color: #888;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mines-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .mines-option:hover::before {
+            left: 100%;
+        }
+
+        .mines-option:hover {
+            background: #252a32;
+            border-color: #5a5d65;
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .mines-option:active {
+            transform: scale(0.98);
+        }
+
+        .mines-option.active {
+            background: linear-gradient(135deg, #ff4757, #ff3742);
+            border-color: #ff4757;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        .mines-option.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.5);
+        }
+
+        .mines-option.active:active {
+            transform: scale(0.98);
+        }
+
+        .mines-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .mines-actions .bet-button {
+            flex: 1;
+        }
+
+        .mines-bet-input {
+            background: #1e2328;
+            border: 1px solid #5a5d65;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mines-bet-input:focus {
+            border-color: #ff4757;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+            transform: scale(1.02);
+            background: #252a32;
+        }
+
+        .mines-bet-input:hover {
+            border-color: #5a5d65;
+            background: #252a32;
+        }
+
+        .mines-start-btn {
+            background: linear-gradient(135deg, #ff4757, #ff3742);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mines-start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .mines-start-btn:hover::before {
+            left: 100%;
+        }
+
+        .mines-start-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 71, 87, 0.6);
+        }
+
+        .mines-cashout-btn {
+            background: linear-gradient(135deg, #ffc107, #ffa500);
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mines-cashout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .mines-cashout-btn:hover::before {
+            left: 100%;
+        }
+
+        .mines-cashout-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 193, 7, 0.6);
+        }
+
+        /* Credits Button - Estilo Bet */
+        .credits-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e2328;
+            border: 1px solid #3c4043;
+            color: #888;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            z-index: 998;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Ajustar posição do botão de créditos no mobile */
+        @media (max-width: 768px) {
+            .credits-button {
+                bottom: 80px;
+                right: 12px;
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
+        }
+
+        .credits-button:hover {
+            background: #252a32;
+            border-color: #5a5d65;
+            color: #fff;
+        }
+
+        .credits-button::before {
+            content: '©';
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #ffc107;
+        }
+
+        /* Desktop sidebar adjustments */
+        @media (min-width: 769px) {
+            .sidebar-overlay {
+                display: none !important;
+            }
+        }
+
+        /* Responsive Sidebar */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 280px;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            }
+
+            .sidebar.closed {
+                left: -280px;
+            }
+
+            .sidebar-close {
+                display: block;
+            }
+
+            .sidebar-toggle-arrow {
+                left: 280px;
+                height: 50px;
+                width: 25px;
+                margin-left: -1px;
+            }
+
+            .sidebar-toggle-arrow.closed {
+                left: 0;
+                margin-left: 0;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .main-content.sidebar-closed {
+                margin-left: 0;
+            }
+
+            .header {
+                padding: 15px 20px;
+            }
+
+            .game-title h1 {
+                font-size: 1.3rem;
+            }
+
+            /* Otimizações aprimoradas para mobile */
+            #mines-game {
+                padding-bottom: 50px;
+            }
+
+            .mines-grid-container {
+                margin: 20px 0;
+                padding: 0 5px;
+            }
+            
+            .mine-tile {
+                width: 58px;
+                height: 58px;
+                font-size: 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .mines-grid {
+                gap: 8px;
+                padding: 15px;
+                max-width: 100%;
+                border-radius: 12px;
+            }
+
+            .mines-info {
+                gap: 10px;
+                justify-content: space-around;
+                flex-wrap: nowrap;
+            }
+
+            .mines-info-item {
+                padding: 10px 15px;
+                font-size: 0.75rem;
+                min-width: 90px;
+                flex: 1;
+                border-radius: 10px;
+            }
+
+            .mines-info-label {
+                font-size: 0.7rem;
+                margin-bottom: 6px;
+            }
+
+            .mines-info-value {
+                font-size: 1.1rem;
+            }
+
+            .mines-controls {
+                padding: 15px;
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+
+            .mines-settings {
+                gap: 15px;
+            }
+
+            .mines-selector {
+                gap: 8px;
+                justify-content: space-between;
+            }
+
+            .mines-option {
+                min-width: 50px;
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                border-radius: 8px;
+            }
+
+            .setting-label {
+                font-size: 0.75rem;
+                margin-bottom: 8px;
+            }
+
+            .mines-bet-input {
+                padding: 14px 45px 14px 45px;
+                font-size: 1.2rem;
+                border-radius: 10px;
+            }
+
+            .mines-bet-controls {
+                right: 8px;
+                gap: 5px;
+            }
+
+            .mines-bet-btn {
+                width: 24px;
+                height: 24px;
+                font-size: 13px;
+            }
+
+            .mines-actions {
+                gap: 10px;
+                margin-top: 10px;
+            }
+
+            .mines-start-btn, .mines-cashout-btn {
+                padding: 16px 24px;
+                font-size: 1.1rem;
+                border-radius: 10px;
+                font-weight: 700;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Otimizações para telas pequenas */
+            .mines-grid-container {
+                margin: 15px 0;
+                padding: 0 2px;
+            }
+            
+            .mine-tile {
+                width: 54px;
+                height: 54px;
+                font-size: 1.4rem;
+                border-radius: 10px;
+            }
+
+            .mines-grid {
+                gap: 6px;
+                padding: 12px;
+            }
+
+            .mines-info {
+                gap: 6px;
+            }
+
+            .mines-info-item {
+                padding: 8px 10px;
+                min-width: 80px;
+            }
+
+            .mines-info-label {
+                font-size: 0.65rem;
+            }
+
+            .mines-info-value {
+                font-size: 1rem;
+            }
+
+            .mines-option {
+                min-width: 45px;
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            .mines-bet-input {
+                padding: 12px 40px 12px 40px;
+                font-size: 1.1rem;
+            }
+
+            .mines-bet-controls {
+                right: 6px;
+                gap: 4px;
+            }
+
+            .mines-bet-btn {
+                width: 22px;
+                height: 22px;
+                font-size: 12px;
+            }
+
+            .mines-controls {
+                margin-bottom: 25px;
+            }
+
+            .mines-start-btn, .mines-cashout-btn {
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Otimizações adicionais para telas muito pequenas (iPhone SE, etc) */
+        @media (max-width: 375px) {
+            .mines-grid-container {
+                margin: 10px 0;
+            }
+            
+            .mine-tile {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+                border-radius: 8px;
+            }
+
+            .mines-grid {
+                gap: 5px;
+                padding: 10px;
+            }
+
+            .mines-info-item {
+                padding: 6px 8px;
+                min-width: 70px;
+                font-size: 0.7rem;
+            }
+
+            .mines-info-label {
+                font-size: 0.6rem;
+            }
+
+            .mines-info-value {
+                font-size: 0.95rem;
+            }
+
+            .mines-option {
+                min-width: 40px;
+                padding: 7px 10px;
+                font-size: 0.8rem;
+            }
+
+            .mines-bet-input {
+                padding: 10px 38px 10px 38px;
+                font-size: 1rem;
+            }
+
+            .mines-controls {
+                margin-bottom: 20px;
+            }
+
+            .mines-start-btn, .mines-cashout-btn {
+                padding: 12px 18px;
+                font-size: 0.95rem;
+            }
         }
 
         @media (max-width: 768px) {
@@ -2281,31 +3255,64 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="game-title">
-            <div class="logo-icon">
-                <div class="flame">
-                    <div class="dice">
-                        <div class="pip"></div>
-                        <div class="pip"></div>
-                        <div class="pip"></div>
-                        <div class="pip"></div>
-                    </div>
-                </div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-                <div class="sparkle"></div>
-            </div>
-            <h1>BETetevm</h1>
-        </div>
-        <div class="balance-display">
-            <span class="balance-label">Saldo:</span>
-            <div class="balance-amount" id="balance-amount">R$ 200,00</div>
-        </div>
-    </div>
+    <!-- Sidebar Toggle Arrow -->
+    <div class="sidebar-toggle-arrow" id="sidebar-toggle-arrow"></div>
 
-    <div class="game-container">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-title">Menu</span>
+            <button class="sidebar-close" id="sidebar-close">×</button>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Jogos</div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item active" data-game="crash">
+                    <span class="sidebar-menu-icon">🚀</span>
+                    <span>Crash</span>
+                </li>
+                <li class="sidebar-menu-item" data-game="mines">
+                    <span class="sidebar-menu-icon">💎</span>
+                    <span>Mines</span>
+                </li>
+            </ul>
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="header">
+            <div class="game-title">
+                <div class="logo-icon">
+                    <div class="flame">
+                        <div class="dice">
+                            <div class="pip"></div>
+                            <div class="pip"></div>
+                            <div class="pip"></div>
+                            <div class="pip"></div>
+                        </div>
+                    </div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                    <div class="sparkle"></div>
+                </div>
+                <h1>BETetevm</h1>
+            </div>
+            
+            <div class="balance-display">
+                <span class="balance-label">Saldo:</span>
+                <div class="balance-amount" id="balance-amount">R$ 100,00</div>
+            </div>
+        </div>
+
+    <!-- Crash Game Container -->
+    <div class="game-container" id="crash-game">
         <div class="stats-overlay">
             <div class="stat-item">
                 <div class="stat-value" id="total-bets">0</div>
@@ -2335,6 +3342,15 @@
                 <div class="crash-text">CRASH</div>
             </div>
             <canvas id="canvas"></canvas>
+            
+            <!-- Countdown Bar atrelado ao canvas-container -->
+            <div class="countdown-bar" id="countdown-bar">
+                <div class="countdown-progress" id="countdown-progress"></div>
+                <div class="countdown-content">
+                    <span class="countdown-text">Começando em</span>
+                    <span class="countdown-timer" id="countdown-timer">3.0s</span>
+                </div>
+            </div>
         </div>
 
         <div class="history-section">
@@ -2357,11 +3373,62 @@
         </div>
     </div>
 
-    <div class="countdown-bar" id="countdown-bar">
-        <div class="countdown-progress" id="countdown-progress"></div>
-        <div class="countdown-content">
-            <span class="countdown-text">Começando em</span>
-            <span class="countdown-timer" id="countdown-timer">8.5s</span>
+
+    <!-- Mines Game Container -->
+    <div class="game-container" id="mines-game" style="display: none;">
+        <div class="mines-header">
+            <div class="mines-info">
+                <div class="mines-info-item">
+                    <span class="mines-info-label">Minas:</span>
+                    <span class="mines-info-value" id="mines-count">3</span>
+                </div>
+                <div class="mines-info-item">
+                    <span class="mines-info-label">Multiplicador:</span>
+                    <span class="mines-info-value multiplier-value" id="mines-multiplier">1.00x</span>
+                </div>
+                <div class="mines-info-item">
+                    <span class="mines-info-label">Lucro Potencial:</span>
+                    <span class="mines-info-value profit-value" id="mines-profit">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mines-grid-container">
+            <div class="mines-grid" id="mines-grid">
+                <!-- Grid 5x5 será gerado dinamicamente -->
+            </div>
+        </div>
+
+        <div class="mines-controls">
+            <div class="mines-settings">
+                <div class="setting-group">
+                    <label class="setting-label">Quantidade de Minas</label>
+                    <div class="mines-selector">
+                        <button class="mines-option active" data-mines="3">3</button>
+                        <button class="mines-option" data-mines="5">5</button>
+                        <button class="mines-option" data-mines="7">7</button>
+                        <button class="mines-option" data-mines="10">10</button>
+                        <button class="mines-option" data-mines="15">15</button>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <label class="setting-label">Valor da Aposta</label>
+                    <div class="bet-input-container">
+                        <span class="currency-symbol">R$</span>
+                        <input type="number" class="bet-input mines-bet-input" id="mines-bet-input" step="1" value="10" placeholder="Digite o valor">
+                        <div class="bet-input-controls">
+                            <button class="bet-input-btn" id="mines-bet-increase">+</button>
+                            <button class="bet-input-btn" id="mines-bet-decrease">−</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mines-actions">
+                <button class="bet-button mines-start-btn" id="mines-start-btn">Começar Jogo</button>
+                <button class="bet-button cash-out mines-cashout-btn" id="mines-cashout-btn" style="display: none;">Retirar</button>
+            </div>
         </div>
     </div>
 
@@ -2378,6 +3445,8 @@
             <button class="confirm-button" id="confirm-button">Entendi e Concordo</button>
         </div>
     </div>
+
+    </div> <!-- End Main Content -->
 
     <!-- Botão de Créditos -->
     <button class="credits-button" id="credits-button">Créditos</button>
@@ -2436,7 +3505,7 @@
             }
 
             initializeGameState() {
-                this.balance = 200;
+                this.balance = sharedBalance;
                 this.currentMultiplier = 1.0;
                 this.isFlying = false;
                 this.hasPlacedBet = false;
@@ -2444,7 +3513,10 @@
                 this.currentBetAmount = 0;
                 this.animationId = null;
                 this.countdownInterval = null;
+                this.countdownTimeout = null; // Adicionar timeout do countdown
                 this.isExploding = false;
+                this.isPaused = false; // Controle de pausa
+                this.isCountingDown = false; // Flag de countdown
                 
                 this.planeX = 0;
                 this.planeY = 0;
@@ -2475,6 +3547,77 @@
                 };
                 
                 this.counterHistory = [1.01, 18.45, 2.02, 5.21, 1.22, 1.25];
+            }
+            
+            // Método para pausar o jogo
+            pauseGame() {
+                this.isPaused = true;
+                
+                // Parar countdown se estiver rodando
+                if (this.countdownInterval) {
+                    clearInterval(this.countdownInterval);
+                    this.countdownInterval = null;
+                }
+                
+                // Cancelar timeout do countdown se existir
+                if (this.countdownTimeout) {
+                    clearTimeout(this.countdownTimeout);
+                    this.countdownTimeout = null;
+                }
+                
+                // Resetar flag de countdown
+                this.isCountingDown = false;
+                
+                // Esconder countdown bar com animação
+                if (this.countdownBar) {
+                    this.countdownBar.classList.remove('show');
+                    this.countdownBar.classList.add('hide');
+                    
+                    // Remover display:block após animação
+                    setTimeout(() => {
+                        if (this.isPaused) {
+                            this.countdownBar.classList.remove('hide');
+                            this.countdownBar.style.display = 'none';
+                        }
+                    }, 400);
+                }
+                
+                // Cancelar animação se estiver rodando
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                    this.animationId = null;
+                }
+            }
+            
+            // Método para retomar o jogo
+            resumeGame() {
+                this.isPaused = false;
+                
+                // Limpar completamente o countdown ao retomar
+                this.isCountingDown = false;
+                if (this.countdownInterval) {
+                    clearInterval(this.countdownInterval);
+                    this.countdownInterval = null;
+                }
+                if (this.countdownTimeout) {
+                    clearTimeout(this.countdownTimeout);
+                    this.countdownTimeout = null;
+                }
+                
+                // Garantir que o countdown bar está limpo
+                if (this.countdownBar) {
+                    this.countdownBar.classList.remove('show', 'hide');
+                    this.countdownBar.style.display = 'none';
+                }
+                
+                // Se estava em countdown ou não estava em jogo, iniciar countdown
+                if (!this.isFlying && !this.isExploding) {
+                    this.startCountdownWithBar();
+                } else if (this.isFlying) {
+                    // Se estava voando, retomar o loop
+                    this.lastFrameTime = 0;
+                    this.animationId = requestAnimationFrame((time) => this.gameLoop(time));
+                }
             }
 
             initializeCanvas() {
@@ -2614,6 +3757,9 @@
                     minimumFractionDigits: 2, 
                     maximumFractionDigits: 2 
                 });
+                
+                // Atualizar saldo compartilhado
+                sharedBalance = this.balance;
                 
                 // Atualizar cor do multiplicador para combinar com a cor da trilha (Branco -> Laranja -> Vermelho)
                 const colors = this.getSmoothColor(this.currentMultiplier);
@@ -2910,6 +4056,7 @@
 
             gameLoop(currentTime) {
                 if (!this.isFlying && !this.isExploding) return;
+                if (this.isPaused) return; // Parar se estiver pausado
                 
                 // Calcular deltaTime (tempo desde o último frame em segundos)
                 if (this.lastFrameTime === 0) {
@@ -2994,17 +4141,47 @@
             }
 
             startCountdownWithBar() {
+                if (this.isPaused) return; // Não iniciar se estiver pausado
+                
+                // Limpar qualquer countdown anterior
+                if (this.countdownInterval) {
+                    clearInterval(this.countdownInterval);
+                    this.countdownInterval = null;
+                }
+                if (this.countdownTimeout) {
+                    clearTimeout(this.countdownTimeout);
+                    this.countdownTimeout = null;
+                }
+                
                 this.isCountingDown = true;
                 let countdownTime = 3.0;
                 const totalTime = 3.0;
-                this.countdownBar.classList.add('show');
-                this.countdownTimer.textContent = countdownTime.toFixed(1) + 's';
                 
-                // Inicializar barra de progresso
+                // Remover todas as classes e resetar estado
+                this.countdownBar.classList.remove('hide', 'show');
+                
+                // Tornar visível primeiro sem animação
+                this.countdownBar.style.display = 'block';
+                
+                // Inicializar valores
+                this.countdownTimer.textContent = countdownTime.toFixed(1) + 's';
                 const progressBar = document.getElementById('countdown-progress');
                 progressBar.style.width = '100%';
                 
-                const countdownInterval = setInterval(() => {
+                // Usar requestAnimationFrame para garantir que a animação funcione
+                requestAnimationFrame(() => {
+                    if (!this.isPaused) {
+                        this.countdownBar.classList.add('show');
+                    }
+                });
+                
+                this.countdownInterval = setInterval(() => {
+                    if (this.isPaused) {
+                        clearInterval(this.countdownInterval);
+                        this.countdownInterval = null;
+                        return;
+                    }
+                    
                     countdownTime -= 0.1;
                     this.countdownTimer.textContent = countdownTime.toFixed(1) + 's';
                     
@@ -3013,15 +4190,40 @@
                     progressBar.style.width = progressPercentage + '%';
                     
                     if (countdownTime <= 0) {
-                        clearInterval(countdownInterval);
+                        clearInterval(this.countdownInterval);
+                        this.countdownInterval = null;
+                        
+                        // Verificar se não foi pausado antes de continuar
+                        if (this.isPaused) {
+                            return;
+                        }
+                        
+                        // Animação de fade out antes de iniciar a rodada
                         this.countdownBar.classList.remove('show');
-                        this.isCountingDown = false;
-                        this.startNewRound();
+                        this.countdownBar.classList.add('hide');
+                        
+                        this.countdownTimeout = setTimeout(() => {
+                            // Verificar novamente se não foi pausado durante o timeout
+                            if (this.isPaused) {
+                                return;
+                            }
+                            
+                            this.countdownBar.classList.remove('hide');
+                            this.countdownBar.style.display = 'none';
+                            this.isCountingDown = false;
+                            this.countdownTimeout = null;
+                            this.startNewRound();
+                        }, 400);
                     }
                 }, 100);
             }
 
             startNewRound() {
+                // Não iniciar se estiver pausado
+                if (this.isPaused) {
+                    return;
+                }
+                
                 // Redimensionar canvas antes de começar nova rodada
                 this.resizeCanvas();
                 
@@ -3090,7 +4292,7 @@
 
             loadGameData() {
                 if (this.savedData) {
-                    this.balance = this.savedData.balance || 3000;
+                    this.balance = this.savedData.balance || 100;
                     this.stats = this.savedData.stats || { totalBets: 0, totalWins: 0, winRate: 0 };
                     this.counterHistory = this.savedData.counterHistory || this.counterHistory;
                 }
@@ -3099,8 +4301,353 @@
             }
         }
 
+        // Shared balance between games
+        let sharedBalance = 100;
+
+        // Mines Game Class
+        class MinesGame {
+            constructor() {
+                this.balance = sharedBalance;
+                this.minesCount = 3;
+                this.betAmount = 0;
+                this.gameActive = false;
+                this.revealedTiles = 0;
+                this.currentMultiplier = 1.0;
+                this.gridSize = 25;
+                this.minePositions = [];
+                this.revealedPositions = [];
+                
+                this.initializeElements();
+                this.initializeGrid(true); // Animar na primeira vez
+                this.initializeEventListeners();
+                this.balance = sharedBalance; // Sincronizar com saldo compartilhado
+                this.updateBalance();
+            }
+
+            initializeElements() {
+                this.gridElement = document.getElementById('mines-grid');
+                this.balanceElement = document.getElementById('balance-amount');
+                this.multiplierElement = document.getElementById('mines-multiplier');
+                this.profitElement = document.getElementById('mines-profit');
+                this.minesCountElement = document.getElementById('mines-count');
+                this.betInput = document.getElementById('mines-bet-input');
+                this.startBtn = document.getElementById('mines-start-btn');
+                this.cashoutBtn = document.getElementById('mines-cashout-btn');
+            }
+
+            initializeGrid(animate = false) {
+                this.gridElement.innerHTML = '';
+                for (let i = 0; i < this.gridSize; i++) {
+                    const tile = document.createElement('div');
+                    tile.classList.add('mine-tile');
+                    if (animate) {
+                        tile.classList.add('animate');
+                    }
+                    tile.dataset.index = i;
+                    tile.addEventListener('click', () => this.revealTile(i));
+                    this.gridElement.appendChild(tile);
+                }
+            }
+
+            initializeEventListeners() {
+                // Mines selector
+                document.querySelectorAll('.mines-option').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if (this.gameActive) return;
+                        document.querySelectorAll('.mines-option').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.minesCount = parseInt(e.target.dataset.mines);
+                        this.minesCountElement.textContent = this.minesCount;
+                    });
+                });
+
+                // Bet controls
+                document.getElementById('mines-bet-increase').addEventListener('click', () => {
+                    if (!this.gameActive) {
+                        let value = parseInt(this.betInput.value) || 0;
+                        this.betInput.value = (value + 10).toString();
+                    }
+                });
+
+                document.getElementById('mines-bet-decrease').addEventListener('click', () => {
+                    if (!this.gameActive) {
+                        let value = parseInt(this.betInput.value) || 0;
+                        if (value > 10) {
+                            this.betInput.value = (value - 10).toString();
+                        }
+                    }
+                });
+
+                // Start and cashout buttons
+                this.startBtn.addEventListener('click', () => this.startGame());
+                this.cashoutBtn.addEventListener('click', () => this.cashOut());
+            }
+
+            startGame() {
+                const betAmount = parseInt(this.betInput.value);
+                
+                if (!betAmount || betAmount <= 0 || betAmount > this.balance) {
+                    return;
+                }
+
+                this.betAmount = betAmount;
+                this.balance -= betAmount;
+                this.gameActive = true;
+                this.revealedTiles = 0;
+                this.currentMultiplier = 1.0;
+                this.revealedPositions = [];
+                
+                // Generate random mine positions
+                this.minePositions = [];
+                while (this.minePositions.length < this.minesCount) {
+                    const pos = Math.floor(Math.random() * this.gridSize);
+                    if (!this.minePositions.includes(pos)) {
+                        this.minePositions.push(pos);
+                    }
+                }
+
+                this.initializeGrid(false); // Sem animação durante o jogo
+                this.startBtn.style.display = 'none';
+                this.cashoutBtn.style.display = 'block';
+                this.betInput.disabled = true;
+                
+                this.updateBalance();
+                this.updateMultiplier();
+            }
+
+            revealTile(index) {
+                if (!this.gameActive || this.revealedPositions.includes(index)) {
+                    return;
+                }
+
+                const tile = this.gridElement.children[index];
+                tile.classList.add('revealed');
+                this.revealedPositions.push(index);
+
+                if (this.minePositions.includes(index)) {
+                    // Hit a mine!
+                    tile.classList.add('bomb');
+                    tile.textContent = '💣';
+                    this.gameOver(false);
+                } else {
+                    // Found a diamond!
+                    tile.classList.add('diamond');
+                    tile.textContent = '💎';
+                    this.revealedTiles++;
+                    this.calculateMultiplier();
+                    this.updateMultiplier();
+                }
+            }
+
+            calculateMultiplier() {
+                // Calculate multiplier based on revealed tiles and mines
+                const safeSpots = this.gridSize - this.minesCount;
+                
+                // Fórmula com house edge (margem da casa) como na Blaze
+                let multiplier = 1.0;
+                const houseEdge = 0.97; // 3% de margem da casa (97% RTP) - mais justo
+                
+                for (let i = 0; i < this.revealedTiles; i++) {
+                    const tilesRestantes = this.gridSize - i;
+                    const safeSpotsRestantes = safeSpots - i;
+                    // Multiplicador com ajuste
+                    multiplier *= (tilesRestantes / safeSpotsRestantes) * houseEdge;
+                }
+                
+                // Garantir multiplicador mínimo de 1.0 para o primeiro clique
+                if (this.revealedTiles === 1 && multiplier < 1.0) {
+                    multiplier = 1.0;
+                }
+                
+                // Limitar multiplicador máximo para 1000x (realista)
+                if (multiplier > 1000) {
+                    multiplier = 1000;
+                }
+                
+                this.currentMultiplier = multiplier;
+            }
+
+            cashOut() {
+                if (!this.gameActive) return;
+                
+                const winAmount = this.betAmount * this.currentMultiplier;
+                this.balance += winAmount;
+                
+                this.gameOver(true);
+            }
+
+            gameOver(won) {
+                this.gameActive = false;
+                this.startBtn.style.display = 'block';
+                this.cashoutBtn.style.display = 'none';
+                this.betInput.disabled = false;
+                
+                // Desabilitar botão de início com cooldown
+                this.startBtn.disabled = true;
+                this.startBtn.style.opacity = '0.5';
+                this.startBtn.style.cursor = 'not-allowed';
+
+                // Reveal all tiles with animation
+                let delay = 0;
+                for (let i = 0; i < this.gridSize; i++) {
+                    const tile = this.gridElement.children[i];
+                    if (!this.revealedPositions.includes(i)) {
+                        setTimeout(() => {
+                            tile.classList.add('revealed', 'disabled', 'reveal-animate');
+                            if (this.minePositions.includes(i)) {
+                                tile.classList.add('bomb');
+                                tile.textContent = '💣';
+                            } else {
+                                tile.textContent = '💎';
+                            }
+                        }, delay);
+                        delay += 30; // 30ms entre cada tile
+                    }
+                }
+
+                this.updateBalance();
+                sharedBalance = this.balance;
+
+                // Cooldown de 2 segundos antes de poder jogar novamente
+                setTimeout(() => {
+                    this.startBtn.disabled = false;
+                    this.startBtn.style.opacity = '1';
+                    this.startBtn.style.cursor = 'pointer';
+                }, 2000);
+
+                // Esconder tiles com animação cascata reversa antes de resetar
+                setTimeout(() => {
+                    let hideDelay = 0;
+                    for (let i = 0; i < this.gridSize; i++) {
+                        const tile = this.gridElement.children[i];
+                        setTimeout(() => {
+                            tile.classList.add('hide-animate');
+                        }, hideDelay);
+                        hideDelay += 30; // 30ms entre cada tile
+                    }
+                }, 2200); // Começa após 2.2s
+
+                setTimeout(() => {
+                    this.initializeGrid(false); // Resetar grid após animação de esconder
+                    
+                    // Resetar cores do multiplicador e lucro para branco após todas as animações
+                    this.multiplierElement.classList.remove('white', 'yellow', 'orange', 'red');
+                    this.multiplierElement.classList.add('white');
+                    this.multiplierElement.textContent = '1.00x';
+                    this.profitElement.classList.remove('white', 'green');
+                    this.profitElement.classList.add('white');
+                    this.profitElement.textContent = 'R$ 0,00';
+                }, 3000);
+            }
+
+            updateBalance() {
+                sharedBalance = this.balance;
+                this.balanceElement.textContent = 'R$ ' + this.balance.toLocaleString('pt-BR', { 
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2 
+                });
+            }
+
+            updateMultiplier() {
+                this.multiplierElement.textContent = this.currentMultiplier.toFixed(2) + 'x';
+                
+                // Aplicar cores dinâmicas ao multiplicador (como no Crash)
+                this.multiplierElement.classList.remove('white', 'yellow', 'orange', 'red');
+                if (this.currentMultiplier < 1.5) {
+                    this.multiplierElement.classList.add('white');
+                } else if (this.currentMultiplier < 2.5) {
+                    this.multiplierElement.classList.add('yellow');
+                } else if (this.currentMultiplier < 5.0) {
+                    this.multiplierElement.classList.add('orange');
+                } else {
+                    this.multiplierElement.classList.add('red');
+                }
+                
+                const profit = (this.betAmount * this.currentMultiplier) - this.betAmount;
+                this.profitElement.textContent = 'R$ ' + profit.toLocaleString('pt-BR', { 
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2 
+                });
+                
+                // Aplicar cores dinâmicas ao lucro
+                this.profitElement.classList.remove('white', 'green');
+                if (profit > 0) {
+                    this.profitElement.classList.add('green');
+                } else {
+                    this.profitElement.classList.add('white');
+                }
+            }
+        }
+
         // Initialize game when page loads
         document.addEventListener('DOMContentLoaded', () => {
+            let aviatorGame;
+            let minesGame;
+            let currentGame = 'crash';
+
+            // Sidebar functionality
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const sidebarClose = document.getElementById('sidebar-close');
+            const sidebarToggleArrow = document.getElementById('sidebar-toggle-arrow');
+            const mainContent = document.getElementById('main-content');
+            const isMobile = window.innerWidth <= 768;
+
+            // Toggle sidebar
+            function toggleSidebar() {
+                const currentIsMobile = window.innerWidth <= 768;
+                sidebar.classList.toggle('closed');
+                sidebarToggleArrow.classList.toggle('closed');
+                
+                if (currentIsMobile) {
+                    sidebarOverlay.classList.toggle('show');
+                } else {
+                    mainContent.classList.toggle('sidebar-closed');
+                }
+            }
+
+            // Close sidebar
+            function closeSidebar() {
+                const currentIsMobile = window.innerWidth <= 768;
+                sidebar.classList.add('closed');
+                sidebarToggleArrow.classList.add('closed');
+                
+                if (currentIsMobile) {
+                    sidebarOverlay.classList.remove('show');
+                } else {
+                    mainContent.classList.add('sidebar-closed');
+                }
+            }
+
+            // Open sidebar
+            function openSidebar() {
+                const currentIsMobile = window.innerWidth <= 768;
+                sidebar.classList.remove('closed');
+                sidebarToggleArrow.classList.remove('closed');
+                
+                if (currentIsMobile) {
+                    sidebarOverlay.classList.add('show');
+                } else {
+                    mainContent.classList.remove('sidebar-closed');
+                }
+            }
+
+            // Initialize sidebar state - always start closed
+            closeSidebar();
+
+            // Event listeners
+            sidebarClose.addEventListener('click', closeSidebar);
+            sidebarToggleArrow.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', closeSidebar);
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                const wasMobile = window.innerWidth <= 768;
+                if (wasMobile !== isMobile) {
+                    location.reload(); // Reload to reinitialize
+                }
+            });
+
             // Show warning modal every time
             const warningModal = document.getElementById('warning-modal');
             const confirmButton = document.getElementById('confirm-button');
@@ -3111,8 +4658,60 @@
             // Handle confirm button click
             confirmButton.addEventListener('click', () => {
                 warningModal.classList.add('hidden');
-                // Initialize game after modal is hidden
-                new AviatorGame();
+                // Initialize crash game by default
+                aviatorGame = new AviatorGame();
+            });
+
+            // Game navigation from sidebar
+            document.querySelectorAll('.sidebar-menu-item[data-game]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const game = btn.dataset.game;
+                    
+                    // Update active button in sidebar
+                    document.querySelectorAll('.sidebar-menu-item[data-game]').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth <= 768) {
+                        closeSidebar();
+                    }
+                    
+                    // Update shared balance
+                    if (currentGame === 'crash' && aviatorGame) {
+                        sharedBalance = aviatorGame.balance;
+                        // Pausar o jogo Crash
+                        aviatorGame.pauseGame();
+                    } else if (currentGame === 'mines' && minesGame) {
+                        sharedBalance = minesGame.balance;
+                    }
+                    
+                    // Show/hide games
+                    if (game === 'crash') {
+                        document.getElementById('crash-game').style.display = 'flex';
+                        document.getElementById('mines-game').style.display = 'none';
+                        document.getElementById('countdown-bar').style.display = 'block';
+                        
+                        if (aviatorGame) {
+                            aviatorGame.balance = sharedBalance;
+                            aviatorGame.updateDisplay();
+                            // Retomar o jogo Crash
+                            aviatorGame.resumeGame();
+                        }
+                        currentGame = 'crash';
+                    } else if (game === 'mines') {
+                        document.getElementById('crash-game').style.display = 'none';
+                        document.getElementById('mines-game').style.display = 'flex';
+                        document.getElementById('countdown-bar').style.display = 'none';
+                        
+                        if (!minesGame) {
+                            minesGame = new MinesGame();
+                        } else {
+                            minesGame.balance = sharedBalance;
+                            minesGame.updateBalance();
+                        }
+                        currentGame = 'mines';
+                    }
+                });
             });
 
             // Credits modal functionality
@@ -3126,13 +4725,6 @@
 
             creditsClose.addEventListener('click', () => {
                 creditsModal.classList.remove('show');
-            });
-
-            // Close modal when clicking outside
-            creditsModal.addEventListener('click', (e) => {
-                if (e.target === creditsModal) {
-                    creditsModal.classList.remove('show');
-                }
             });
         });
     </script>
