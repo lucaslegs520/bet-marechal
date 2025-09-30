@@ -1369,6 +1369,209 @@
             }
         }
 
+        /* Credits Button - Estilo Bet */
+        .credits-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e2328;
+            border: 1px solid #3c4043;
+            color: #888;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .credits-button:hover {
+            background: #252a32;
+            border-color: #5a5d65;
+            color: #fff;
+        }
+
+        .credits-button::before {
+            content: '©';
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #ffc107;
+        }
+
+        /* Credits Modal - Estilo Bet */
+        .credits-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .credits-modal.show {
+            display: flex;
+        }
+
+        .credits-content {
+            background: #1e2328;
+            padding: 30px 40px;
+            border-radius: 8px;
+            text-align: left;
+            border: 1px solid #3c4043;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            max-width: 450px;
+            width: 90%;
+            margin: 20px;
+            animation: slideInUp 0.3s ease-out;
+            position: relative;
+        }
+
+        .credits-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #3c4043;
+            color: #888;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-weight: 300;
+        }
+
+        .credits-close:hover {
+            background: rgba(255, 71, 87, 0.1);
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .credits-title {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .credits-subtitle {
+            color: #666;
+            font-size: 0.8rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .credits-team {
+            margin: 15px 0;
+        }
+
+        .credits-label {
+            color: #888;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .credits-member {
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 10px 15px;
+            margin: 6px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            border-left: 2px solid #ffc107;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .credits-member::before {
+            content: '•';
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+
+        .credits-member:hover {
+            background: rgba(255, 193, 7, 0.08);
+            border-left-color: #ff6b35;
+        }
+
+        .credits-school {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #3c4043;
+        }
+
+        .credits-school-name {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .credits-class {
+            color: #888;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .credits-school-name::before {
+            content: '🎓';
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .credits-button {
+                bottom: 12px;
+                right: 12px;
+                padding: 6px 12px;
+                font-size: 0.7rem;
+            }
+
+            .credits-content {
+                padding: 25px 20px;
+                max-width: 92%;
+            }
+
+            .credits-title {
+                font-size: 1.3rem;
+            }
+
+            .credits-member {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+
+            .credits-school-name {
+                font-size: 1rem;
+            }
+
+            .credits-class {
+                font-size: 0.85rem;
+            }
+        }
+
         /* Media query específica para telas de 6.5 polegadas (360-414px) */
         @media (max-width: 414px) and (min-width: 360px) {
             .header {
@@ -2176,6 +2379,31 @@
         </div>
     </div>
 
+    <!-- Botão de Créditos -->
+    <button class="credits-button" id="credits-button">Créditos</button>
+
+    <!-- Modal de Créditos -->
+    <div class="credits-modal" id="credits-modal">
+        <div class="credits-content">
+            <button class="credits-close" id="credits-close">×</button>
+            <div class="credits-title">Créditos</div>
+            <div class="credits-subtitle">Desenvolvido por</div>
+            
+            <div class="credits-team">
+                <div class="credits-label">Equipe de Desenvolvimento</div>
+                <div class="credits-member">Lucas Guimarães</div>
+                <div class="credits-member">Matheus Taylor</div>
+                <div class="credits-member">Talles Cristovão</div>
+                <div class="credits-member">Miguel Torres</div>
+            </div>
+            
+            <div class="credits-school">
+                <div class="credits-school-name">ETEVM</div>
+                <div class="credits-class">Turma 1412</div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         class AviatorGame {
@@ -2886,8 +3114,27 @@
                 // Initialize game after modal is hidden
                 new AviatorGame();
             });
+
+            // Credits modal functionality
+            const creditsButton = document.getElementById('credits-button');
+            const creditsModal = document.getElementById('credits-modal');
+            const creditsClose = document.getElementById('credits-close');
+
+            creditsButton.addEventListener('click', () => {
+                creditsModal.classList.add('show');
+            });
+
+            creditsClose.addEventListener('click', () => {
+                creditsModal.classList.remove('show');
+            });
+
+            // Close modal when clicking outside
+            creditsModal.addEventListener('click', (e) => {
+                if (e.target === creditsModal) {
+                    creditsModal.classList.remove('show');
+                }
+            });
         });
     </script>
 </body>
-</html>
 </html>
