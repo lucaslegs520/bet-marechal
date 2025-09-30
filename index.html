@@ -66,7 +66,7 @@
             background: linear-gradient(45deg, #ffd700, #ff6b35, #ff3333, #cc0000);
             border-radius: 50%;
             opacity: 0.1;
-            /* Removido animation pesada */
+            animation: logoGlow 3s ease-in-out infinite alternate;
             z-index: -1;
         }
 
@@ -79,7 +79,7 @@
             bottom: -12px;
             background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
             border-radius: 50%;
-            /* Removido animation pesada */
+            animation: logoGlow 4s ease-in-out infinite alternate-reverse;
             z-index: -2;
         }
 
@@ -123,8 +123,12 @@
             background: linear-gradient(135deg, #ffd700, #ff6b35, #ff3333, #cc0000);
             border-radius: 20% 80% 20% 80% / 60% 40% 60% 40%;
             transform: rotate(45deg);
-            /* Removido animation pesada com box-shadow */
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            animation: energyPulse 2.5s ease-in-out infinite alternate;
+            box-shadow: 
+                0 0 20px rgba(255, 215, 0, 0.8),
+                0 0 30px rgba(255, 107, 53, 0.6),
+                0 0 40px rgba(255, 51, 51, 0.4),
+                0 0 50px rgba(204, 0, 0, 0.2);
         }
 
         .flame::before {
@@ -137,7 +141,7 @@
             background: linear-gradient(135deg, #ffd700, #ff6b35, #ff3333, #cc0000);
             border-radius: 20% 80% 20% 80% / 60% 40% 60% 40%;
             opacity: 0.3;
-            /* Removido animation pesada */
+            animation: flameFlicker 1.5s ease-in-out infinite alternate;
             z-index: -1;
         }
 
@@ -151,7 +155,7 @@
             background: linear-gradient(135deg, #ffd700, #ff6b35, #ff3333, #cc0000);
             border-radius: 20% 80% 20% 80% / 60% 40% 60% 40%;
             opacity: 0.2;
-            /* Removido animation pesada */
+            animation: flameFlicker 2s ease-in-out infinite alternate-reverse;
             z-index: -2;
         }
 
@@ -290,7 +294,7 @@
             font-style: normal;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            /* Removido animation pesada */
+            animation: titleGlow 2s ease-in-out infinite alternate;
         }
 
         .game-title h1::before {
@@ -446,6 +450,7 @@
             height: 100%;
             border-radius: 8px;
             background: #1e2328;
+            will-change: transform;
         }
 
         .multiplier-display {
@@ -460,6 +465,7 @@
             z-index: 10;
             animation: pulse 2s infinite;
             letter-spacing: -0.02em;
+            will-change: color, text-shadow;
         }
 
         .crash-display {
@@ -829,35 +835,8 @@
             background: #ff4757;
         }
 
-        /* Otimizações para dispositivos móveis menos potentes */
+        /* Melhorias para touch em dispositivos móveis */
         @media (max-width: 414px) {
-            /* Reduzir animações em dispositivos móveis */
-            * {
-                animation-duration: 0.3s !important;
-                animation-iteration-count: 1 !important;
-            }
-            
-            /* Desabilitar animações pesadas */
-            .logo-icon::before,
-            .logo-icon::after,
-            .flame::before,
-            .flame::after {
-                animation: none !important;
-            }
-            
-            /* Otimizar transformações */
-            .bet-button:hover,
-            .quick-bet:hover,
-            .counter-item:hover {
-                transform: none !important;
-            }
-            
-            /* Reduzir box-shadows complexas */
-            .bet-button,
-            .quick-bet,
-            .counter-item {
-                box-shadow: none !important;
-            }
             .bet-input-btn {
                 min-width: 24px;
                 min-height: 24px;
@@ -2253,6 +2232,13 @@
                 this.gameDuration = 0;
                 this.lastFrameTime = 0;
                 this.deltaTime = 0;
+                this.targetFPS = 60;
+                this.frameTime = 1000 / this.targetFPS;
+                
+                // Cache de cores para performance
+                this.colorCache = new Map();
+                this.lastColorMultiplier = 0;
+                this.cachedColors = null;
                 
                 this.stats = {
                     totalBets: 0,
@@ -2261,36 +2247,34 @@
                 };
                 
                 this.counterHistory = [1.01, 18.45, 2.02, 5.21, 1.22, 1.25];
-                
-                // Detectar dispositivo menos potente
-                this.isLowEndDevice = this.detectLowEndDevice();
             }
 
             initializeCanvas() {
                 this.resizeCanvas();
                 
-                // Listener simples para resize - só redimensiona quando não está rodando
+                // Otimizações de canvas para melhor performance
+                this.ctx.imageSmoothingEnabled = true;
+                this.ctx.imageSmoothingQuality = 'low'; // Reduzir qualidade para melhor performance
+                
+                // Debounce para resize (evitar múltiplas chamadas)
+                let resizeTimeout;
                 window.addEventListener('resize', () => {
-                    this.resizeCanvas();
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => {
+                        if (!this.isFlying || this.isExploding) {
+                            this.resizeCanvas();
+                        }
+                    }, 150);
                 });
                 
-                // Listener para mudanças de orientação (mobile)
+                // Listener para mudanças de orientação (mobile) com debounce
                 window.addEventListener('orientationchange', () => {
-                    setTimeout(() => this.resizeCanvas(), 300);
+                    setTimeout(() => {
+                        if (!this.isFlying || this.isExploding) {
+                            this.resizeCanvas();
+                        }
+                    }, 300);
                 });
-            }
-
-            detectLowEndDevice() {
-                // Detectar dispositivos menos potentes baseado em vários fatores
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                const memory = navigator.deviceMemory || 4; // Memória em GB, padrão 4GB
-                const cores = navigator.hardwareConcurrency || 4; // Núcleos de CPU, padrão 4
-                const connection = navigator.connection;
-                const isSlowConnection = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
-                
-                // Considerar dispositivo menos potente se:
-                // - É mobile E (tem menos de 4GB RAM OU menos de 4 cores OU conexão lenta)
-                return isMobile && (memory < 4 || cores < 4 || isSlowConnection);
             }
 
             resizeCanvas() {
@@ -2362,109 +2346,37 @@
             }
 
             calculateCrashChance() {
-                // Chance de crash DINÂMICA baseada no multiplicador com aleatoriedade
-                const timeInSeconds = this.gameDuration;
-                const currentMult = this.currentMultiplier;
-                
-                // === SISTEMA DINÂMICO PARA CRASHES INTERMEDIÁRIOS ===
-                
-                // Fórmula com picos de expectativa em mults intermediários
-                // Base alta + picos em zonas específicas + foco em mults intermediários
-                const baseChance = 0.02; // 2% base
-                
-                // Zona de alta expectativa (1.5x - 2.0x) - pico de tensão
-                let dynamicChance = baseChance;
-                
-                // Pico de expectativa em 1.6x - 1.8x (zona de maior tensão)
-                if (currentMult >= 1.5 && currentMult <= 2.0) {
-                    const expectationPeak = Math.sin((currentMult - 1.5) * Math.PI / 0.5) * 0.08; // Pico senoidal
-                    dynamicChance += expectationPeak;
-                    
-                    // Bônus extra em 1.7x especificamente
-                    if (currentMult >= 1.65 && currentMult <= 1.75) {
-                        dynamicChance += 0.06; // +6% extra na zona 1.7x
-                    }
+                // Chance de crash baseada no tempo com mais aleatoriedade
+                if (this.gameDuration < 3) {
+                    return 0.0002; // Chance muito baixa nos primeiros 3 segundos
                 }
                 
-                // Zona de expectativa moderada (1.2x - 1.5x)
-                else if (currentMult >= 1.2 && currentMult < 1.5) {
-                    const moderateExpectation = 0.03 + (currentMult - 1.2) * 0.05; // 3% a 4.5%
-                    dynamicChance += moderateExpectation;
+                // Adicionar aleatoriedade à chance base
+                const randomFactor = (Math.random() - 0.5) * 0.001; // Variação aleatória de ±0.05%
+                
+                // Chance de crash aumenta progressivamente com o tempo
+                let baseCrashChance;
+                if (this.gameDuration < 8) {
+                    // 3-8 segundos - chance baixa com aleatoriedade
+                    baseCrashChance = 0.0005 + ((this.gameDuration - 3) * 0.0003);
+                } else if (this.gameDuration < 15) {
+                    // 8-15 segundos - chance moderada com aleatoriedade
+                    baseCrashChance = 0.002 + ((this.gameDuration - 8) * 0.0008);
+                } else if (this.gameDuration < 25) {
+                    // 15-25 segundos - chance alta com aleatoriedade
+                    baseCrashChance = 0.0076 + ((this.gameDuration - 15) * 0.002);
+                } else if (this.gameDuration < 40) {
+                    // 25-40 segundos - chance muito alta com aleatoriedade
+                    baseCrashChance = 0.0276 + ((this.gameDuration - 25) * 0.004);
+                } else {
+                    // Acima de 40 segundos - chance extremamente alta com aleatoriedade
+                    baseCrashChance = 0.0876 + ((this.gameDuration - 40) * 0.006);
                 }
                 
-                // Zona de expectativa baixa (1.0x - 1.2x)
-                else if (currentMult >= 1.0 && currentMult < 1.2) {
-                    const lowExpectation = 0.015 + (currentMult - 1.0) * 0.075; // 1.5% a 3%
-                    dynamicChance += lowExpectation;
-                }
+                // Aplicar aleatoriedade e garantir valor mínimo
+                const finalChance = Math.max(0.0001, baseCrashChance + randomFactor);
                 
-                // Zona de expectativa alta (2.0x - 2.5x) - segunda zona de tensão
-                else if (currentMult >= 2.0 && currentMult <= 2.5) {
-                    const secondPeak = Math.sin((currentMult - 2.0) * Math.PI / 0.5) * 0.06; // Segundo pico
-                    dynamicChance += secondPeak;
-                }
-                
-                // Penalidade para multiplicadores muito altos (reduz chance)
-                if (currentMult > 2.5) {
-                    const highMultPenalty = (currentMult - 2.5) * 0.12; // Penalidade crescente
-                    dynamicChance -= highMultPenalty;
-                }
-                
-                // === ALEATORIEDADE DINÂMICA ===
-                
-                // 1. Fator de variação do multiplicador (varia a cada segundo)
-                const multVariation = 0.6 + (Math.random() * 1.8); // 0.6x a 2.4x
-                dynamicChance *= multVariation;
-                
-                // 2. Oscilação baseada no multiplicador atual
-                const multOscillation = Math.sin(currentMult * 2.5) * 0.05; // ±5% oscilação
-                dynamicChance += multOscillation;
-                
-                // 3. Fator de "pressão" - quanto maior o multiplicador, mais pressão
-                const pressureFactor = Math.min(currentMult * 0.02, 0.15); // Até 15% extra
-                dynamicChance += pressureFactor;
-                
-                // 4. Aleatoriedade temporal (varia com o tempo)
-                const timeRandom = Math.sin(timeInSeconds * 1.2) * 0.03; // ±3% temporal
-                dynamicChance += timeRandom;
-                
-                // 5. Spike de perigo INVERTIDO (mais comum em mults baixos)
-                const spikeChance = Math.max(0.12 - (currentMult * 0.02), 0.03); // 12% a 3% (invertido)
-                const randomSpike = Math.random() < spikeChance ? (0.15 - currentMult * 0.01) : 0;
-                dynamicChance += randomSpike;
-                
-                // 6. Drop de segurança INVERTIDO (menos comum em mults baixos)
-                const dropChance = Math.min(0.05 + (currentMult * 0.02), 0.2); // 5% a 20% (invertido)
-                const randomDrop = Math.random() < dropChance ? 0.15 : 0;
-                dynamicChance -= randomDrop;
-                
-                // 7. Fator de "sorte" INVERTIDO (mais sorte em mults baixos)
-                const luckRange = Math.max(0.8 - (currentMult * 0.05), 0.3); // 0.8 a 0.3 (invertido)
-                const luckFactor = 1 - luckRange + (Math.random() * luckRange * 2);
-                dynamicChance *= luckFactor;
-                
-                // 8. Fator de tempo reduzido para evitar partidas infinitas
-                const timeFactor = Math.min(1 + (timeInSeconds * 0.01), 1.3); // Máximo 1.3x (reduzido)
-                dynamicChance *= timeFactor;
-                
-                // 9. Onda de instabilidade FOCADA EM INTERMEDIÁRIOS
-                if (currentMult >= 1.3 && currentMult <= 2.2) {
-                    // Pico máximo em 1.7x
-                    const instabilityIntensity = Math.abs(currentMult - 1.7) < 0.2 ? 0.15 : 0.08;
-                    const instabilityChance = Math.abs(currentMult - 1.7) < 0.2 ? 0.08 : 0.05;
-                    
-                    const instabilityWave = Math.random() < instabilityChance ? instabilityIntensity : 0;
-                    dynamicChance += instabilityWave;
-                }
-                
-                // 10. Fator de "resistência" REMOVIDO (não mais favorece mults altos)
-                // Removido para reduzir crashes em mults altos
-                
-                // Garantir limites mínimos e máximos
-                dynamicChance = Math.max(0.008, dynamicChance); // Mínimo 0.8%
-                dynamicChance = Math.min(dynamicChance, 0.75); // Máximo 75%
-                
-                return dynamicChance;
+                return Math.min(finalChance, 0.4); // Máximo 40% de chance por frame
             }
 
 
@@ -2594,8 +2506,15 @@
                 return result;
             }
 
-            // Obter transição suave de cor com base no multiplicador
+            // Obter transição suave de cor com base no multiplicador (com cache)
             getSmoothColor(multiplier) {
+                // Cache de cores para evitar recalcular a cada frame
+                const multiplierRounded = Math.floor(multiplier * 10) / 10; // Arredondar para 1 casa decimal
+                
+                if (this.lastColorMultiplier === multiplierRounded && this.cachedColors) {
+                    return this.cachedColors;
+                }
+                
                 // Definir cores
                 const white = [255, 255, 255];  // #ffffff
                 const orange = [255, 165, 0];   // #ffa500  
@@ -2616,10 +2535,14 @@
                     color = red;
                 }
 
-                return {
+                this.lastColorMultiplier = multiplierRounded;
+                this.cachedColors = {
                     solid: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-                    transparent: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`
+                    transparent: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.3)`,
+                    rgb: color
                 };
+                
+                return this.cachedColors;
             }
 
 
@@ -2629,9 +2552,11 @@
                     const targetCameraX = this.planeX - this.canvas.width / 2;
                     const targetCameraY = this.planeY - this.canvas.height / 2;
                     
-                    // Interpolar suavemente a posição da câmera
-                    this.cameraX += (targetCameraX - this.cameraX) * this.cameraFollowSpeed;
-                    this.cameraY += (targetCameraY - this.cameraY) * this.cameraFollowSpeed;
+                    // Interpolar suavemente a posição da câmera baseado em tempo real
+                    // Ajustar a velocidade para ser independente de FPS (60 FPS como referência)
+                    const cameraFollowSpeedAdjusted = 1 - Math.pow(1 - this.cameraFollowSpeed, this.deltaTime * 60);
+                    this.cameraX += (targetCameraX - this.cameraX) * cameraFollowSpeedAdjusted;
+                    this.cameraY += (targetCameraY - this.cameraY) * cameraFollowSpeedAdjusted;
                 }
             }
 
@@ -2651,8 +2576,9 @@
                 this.ctx.translate(-this.cameraX, -this.cameraY);
                 
                 if (!this.isExploding) {
-                    // Update plane position - Blaze-style trajectory (baseado em delta time)
-                    this.planeX += this.speedX * this.deltaTime * 60; // 60 = fps de referência
+                    // Update plane position baseado em tempo real (não em frames)
+                    const speedXPerSecond = 210; // Pixels por segundo
+                    this.planeX += speedXPerSecond * this.deltaTime;
                     
                     // Blaze-inspired trajectory: starts very flat, then exponential curve
                     const timeProgress = this.planeX / 200; // Time-based progress
@@ -2669,43 +2595,44 @@
                     this.dotPath.push({ x: this.planeX, y: this.planeY });
                     
                     // Keep path length reasonable for performance
-                    const maxPathLength = this.isLowEndDevice ? 60 : 120; // Trilha mais curta em dispositivos menos potentes
-                    if (this.dotPath.length > maxPathLength) {
+                    if (this.dotPath.length > 120) {
                         this.dotPath.shift();
                     }
                 }
                 
-                // Draw trail with optimized rendering
+                // Draw trail with smooth color transitions (otimizado)
                 if (this.dotPath.length > 1) {
-                    this.ctx.lineWidth = this.isLowEndDevice ? 3 : 4; // Linha mais fina em dispositivos menos potentes
+                    this.ctx.lineWidth = 4;
                     this.ctx.lineCap = 'round';
                     this.ctx.lineJoin = 'round';
                     
-                    // Otimização: desenhar trilha com menos segmentos em dispositivos menos potentes
-                    const step = this.isLowEndDevice ? 2 : 1; // Pular pontos em dispositivos menos potentes
+                    // Get color once para todo o path (mais eficiente)
+                    const colors = this.getSmoothColor(this.currentMultiplier);
+                    const rgb = colors.rgb;
                     
-                    // Draw the main line with smooth gradient effect
-                    for (let i = step; i < this.dotPath.length; i += step) {
-                        const progress = i / this.dotPath.length;
-                        const intensity = Math.min(progress * 1.5, 1);
-                        
-                        // Get smooth color for current multiplier
-                        const colors = this.getSmoothColor(this.currentMultiplier);
-                        
-                        // Apply intensity to the solid color for gradient effect
-                        const rgbMatch = colors.solid.match(/rgb\((\d+), (\d+), (\d+)\)/);
-                        if (rgbMatch) {
-                            const [, r, g, b] = rgbMatch;
-                            this.ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${intensity})`;
-                        } else {
-                            this.ctx.strokeStyle = colors.solid;
-                        }
-                        
-                        this.ctx.beginPath();
-                        this.ctx.moveTo(this.dotPath[i - step].x, this.dotPath[i - step].y);
+                    // Desenhar em um único path para melhor performance
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.dotPath[0].x, this.dotPath[0].y);
+                    
+                    // Desenhar linha completa primeiro (sólida)
+                    for (let i = 1; i < this.dotPath.length; i++) {
                         this.ctx.lineTo(this.dotPath[i].x, this.dotPath[i].y);
-                        this.ctx.stroke();
                     }
+                    
+                    // Aplicar gradiente de opacidade com strokeStyle único
+                    const gradient = this.ctx.createLinearGradient(
+                        this.dotPath[0].x, 
+                        this.dotPath[0].y,
+                        this.dotPath[this.dotPath.length - 1].x,
+                        this.dotPath[this.dotPath.length - 1].y
+                    );
+                    
+                    gradient.addColorStop(0, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.3)`);
+                    gradient.addColorStop(0.5, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.7)`);
+                    gradient.addColorStop(1, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 1)`);
+                    
+                    this.ctx.strokeStyle = gradient;
+                    this.ctx.stroke();
                 }
                 
                 // Draw point with smooth color transitions
@@ -2753,54 +2680,43 @@
                 this.ctx.restore();
             }
 
-            gameLoop(currentTime = 0) {
+            gameLoop(currentTime) {
                 if (!this.isFlying && !this.isExploding) return;
                 
-                // Calcular delta time para manter velocidade consistente
+                // Calcular deltaTime (tempo desde o último frame em segundos)
                 if (this.lastFrameTime === 0) {
                     this.lastFrameTime = currentTime;
                 }
                 this.deltaTime = (currentTime - this.lastFrameTime) / 1000; // Converter para segundos
                 this.lastFrameTime = currentTime;
                 
-                // Limitar delta time para evitar saltos grandes (ex: quando abaixa/maximiza janela)
-                this.deltaTime = Math.min(this.deltaTime, 0.1); // Máximo 100ms de diferença
+                // Limitar deltaTime para evitar grandes saltos (ex: quando a aba perde foco)
+                this.deltaTime = Math.min(this.deltaTime, 0.1);
                 
                 if (!this.isExploding) {
-                    // Atualizar duração do jogo
-                    this.gameDuration = (Date.now() - this.gameStartTime) / 1000;
+                    // Atualizar duração do jogo baseado em tempo real
+                    this.gameDuration = (currentTime - this.gameStartTime) / 1000;
                     
-                    // Update multiplier baseado em delta time (velocidade consistente independente do FPS)
-                    const baseIncrement = 0.15; // Incremento por segundo
-                    const acceleration = Math.pow(this.currentMultiplier - 1, 0.8) * 0.1; // Aceleração por segundo
-                    this.currentMultiplier += (baseIncrement + acceleration) * this.deltaTime;
+                    // Update multiplier baseado em tempo real (não em frames)
+                    const baseIncrementPerSecond = 0.09; // Incremento por segundo
+                    const accelerationPerSecond = Math.pow(this.currentMultiplier - 1, 0.8) * 0.06;
+                    this.currentMultiplier += (baseIncrementPerSecond + accelerationPerSecond) * this.deltaTime;
                     
-                    // Chance de crash baseada no tempo (ajustada para delta time)
-                    const crashChance = this.calculateCrashChance() * this.deltaTime;
+                    // Chance de crash baseada no tempo
+                    const crashChance = this.calculateCrashChance();
                     if (Math.random() < crashChance) {
                         this.triggerCrash();
                         return;
                     }
                     
-                    // Otimização: atualizar display menos frequentemente
-                    if (this.gameDuration % 0.1 < 0.05) { // A cada 0.1s aproximadamente
-                        this.updateDisplay();
-                    }
+                    this.updateDisplay();
                 }
                 
                 // Update camera to follow the plane
                 this.updateCamera();
                 
                 this.draw();
-                
-                // Controle de frame rate para dispositivos menos potentes
-                if (this.isLowEndDevice) {
-                    setTimeout(() => {
-                        this.animationId = requestAnimationFrame((time) => this.gameLoop(time));
-                    }, 16); // ~30 FPS
-                } else {
-                    this.animationId = requestAnimationFrame((time) => this.gameLoop(time));
-                }
+                this.animationId = requestAnimationFrame((time) => this.gameLoop(time));
             }
 
             triggerCrash() {
@@ -2885,9 +2801,10 @@
                 this.planeX = 50;
                 this.planeY = this.canvas.height - 50;
                 this.dotPath = [];
+                this.lastFrameTime = 0; // Resetar tempo do frame
                 
-                // Show multiplier display again for new round
-                this.multiplierDisplay.style.display = 'block';
+                // Hide multiplier display at the start of new round
+                this.multiplierDisplay.style.display = 'none';
                 
                 // Only reset bet state if there was no active bet
                 if (!this.hasPlacedBet || this.hasCashedOut) {
@@ -2918,11 +2835,16 @@
 
             startFlying() {
                 this.isFlying = true;
-                this.gameStartTime = Date.now(); // Inicializar tempo de início
-                this.gameDuration = 0;
-                this.lastFrameTime = 0; // Reset do delta time
-                this.deltaTime = 0;
-                this.gameLoop();
+                this.lastFrameTime = 0; // Resetar para evitar grandes deltaTime no primeiro frame
+                
+                // Show multiplier display imediatamente
+                this.multiplierDisplay.style.display = 'block';
+                
+                this.animationId = requestAnimationFrame((time) => {
+                    this.gameStartTime = time; // Inicializar tempo de início
+                    this.gameDuration = 0;
+                    this.gameLoop(time);
+                });
             }
 
             startGame() {
